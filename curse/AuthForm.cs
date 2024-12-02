@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Linq;
@@ -24,20 +25,29 @@ namespace curse
 
             int role = dbhelper.CheckUserRole(login, password);
 
-            if (role == 2)
+            if (login == ConfigurationManager.AppSettings["LocalAdminUsername"] && password == ConfigurationManager.AppSettings["LocalAdminPassword"])
             {
-                AdminForm a = new AdminForm();
-                a.Show();
-                this.Hide();
+
             }
-            else if (role == 1)
+            else
             {
-                ManagerForm a = new ManagerForm();
-                a.Show();
-                this.Hide();
-            }
-            else {
-                MessageBox.Show("Неверный логин или пароль!");
+
+                if (role == 2)
+                {
+                    AdminForm a = new AdminForm();
+                    a.Show();
+                    this.Hide();
+                }
+                else if (role == 1)
+                {
+                    ManagerForm a = new ManagerForm();
+                    a.Show();
+                    this.Hide();
+                }
+                else
+                {
+                    MessageBox.Show("Неверный логин или пароль!");
+                }
             }
         }
 

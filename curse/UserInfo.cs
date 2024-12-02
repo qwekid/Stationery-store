@@ -14,4 +14,10 @@ namespace curse
         public static string password;
         public static int role;
     }
+
+    public class LocalAccount
+    {
+        public string Username { get; set; }
+        public string Password { get; set; }
+    }
 }
