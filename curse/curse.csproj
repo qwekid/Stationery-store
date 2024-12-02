@@ -94,6 +94,12 @@
       <DependentUpon>CreateUser.cs</DependentUpon>
     </Compile>
     <Compile Include="dbhelper.cs" />
+    <Compile Include="LocalAdminForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LocalAdminForm.Designer.cs">
+      <DependentUpon>LocalAdminForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ManagerForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -129,6 +135,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CreateUser.resx">
       <DependentUpon>CreateUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LocalAdminForm.aa.resx">
+      <DependentUpon>LocalAdminForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LocalAdminForm.resx">
+      <DependentUpon>LocalAdminForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ManagerForm.resx">
       <DependentUpon>ManagerForm.cs</DependentUpon>
