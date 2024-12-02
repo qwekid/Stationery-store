@@ -7,10 +7,13 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
+using Word = Microsoft.Office.Interop.Word;
 
 namespace curse
 {
@@ -30,6 +33,7 @@ namespace curse
 
         private void ReportForm_Load(object sender, EventArgs e)
         {
+
             string query = "SELECT MIN(sale_date) FROM sales;";
             dbhelper.LoadDataToDt(dt, query);
 
@@ -55,11 +59,11 @@ namespace curse
             int rows = dt.Rows.Count + 1; // Увеличиваем на 1 для заголовков
             int columns = dt.Columns.Count;
 
-            Microsoft.Office.Interop.Word.Application wordApp = new Microsoft.Office.Interop.Word.Application();
+            Word.Application wordApp = new Word.Application();
             wordApp.Visible = true; // Чтобы увидеть Word
 
             // Создаем новый документ
-            Microsoft.Office.Interop.Word.Document document = wordApp.Documents.Add();
+            Word.Document document = wordApp.Documents.Add();
 
 
             Range headerRange = document.Sections[1].Headers[WdHeaderFooterIndex.wdHeaderFooterPrimary].Range;
@@ -67,7 +71,7 @@ namespace curse
 
 
             Range range = document.Range();
-            Microsoft.Office.Interop.Word.Table table = document.Tables.Add(range, rows, columns);
+            Word.Table table = document.Tables.Add(range, rows, columns);
             table.Borders.Enable = 1; // Включаем границы таблицы
 
             table.Rows[1].Cells[1].Range.Text = "Продавец";
