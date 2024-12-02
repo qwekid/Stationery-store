@@ -30,13 +30,13 @@ namespace curse
         {
             comboBox1.Items.Clear();
             comboBox1.Items.Add("По наименованию");
-            query = "SELECT category_name as 'Наименование категории', description as 'Описание категории' FROM categories";
+            query = "SELECT category_id,  category_name as 'Наименование категории', description as 'Описание категории' FROM categories";
             table = "categories";
-            id_string = "category_name";
+            id_string = "category_id";
             dbhelper.LoadDataToDGV(dataGridView1, query);
 
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells;
-
+            dataGridView1.Columns[0].Visible = false;
             textBox1.Text = "";
         }
 
@@ -48,6 +48,7 @@ namespace curse
             comboBox1.Items.Add("По дате");
             query = "SELECT \r\n    u.username AS 'Продавец',\r\n    GROUP_CONCAT(CONCAT(p.product_name, ': ', c.quantity, ' шт.') SEPARATOR '; ') AS 'Товары',\r\n    s.sale_date AS 'Дата продажи',\r\n    s.total_amount AS 'Финальная стоимость' \r\nFROM \r\n    `check` c \r\n \r\nJOIN \r\n    sales s ON c.sales_sale_id = s.sale_id\r\nJOIN \r\n    products p ON c.products_product_id = p.product_id \r\nJOIN \r\n    users u ON s.user_id = u.user_id\r\nGROUP BY \r\n    s.sale_id, u.username, s.sale_date, s.total_amount\r\n";
             table = "sales";
+            id_string = "sale_id";
             dbhelper.LoadDataToDGV(dataGridView1, query);
 
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells;
@@ -89,25 +90,21 @@ namespace curse
                     DataTable dt = new DataTable();
                     int currendrowid = dataGridView1.CurrentRow.Index;
 
-
-                    ToolStripMenuItem updateRowMenuItem = new ToolStripMenuItem("Редактировать строку");
-                    updateRowMenuItem.Click += UpdateRowMenuItem_Click;
                     contextMenuStrip.Items.Clear();
-                    contextMenuStrip.Items.Add(updateRowMenuItem);
+                    
 
                     query = $"select product_name from `check` c join products p on c.products_product_id = p.product_id where product_name = '{dataGridView1.Rows[currendrowid].Cells[0].Value}'";
                     dbhelper.LoadDataToDt(dt, query);
                     if (dt.Rows.Count > 0)
                     {
-                        ToolStripMenuItem deleteRowMenuItem1 = new ToolStripMenuItem("Удалить строку");
-                        deleteRowMenuItem1.Click += DeleteRowMenuItem_ClickError;
-                        contextMenuStrip.Items.Add(deleteRowMenuItem1);
-
-                        // Показываем контекстное меню
-                        contextMenuStrip.Show(dataGridView1, dataGridView1.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, true).Location);
                         return;
                     }
                     else {
+
+                        ToolStripMenuItem updateRowMenuItem = new ToolStripMenuItem("Редактировать строку");
+                        updateRowMenuItem.Click += UpdateRowMenuItem_Click;
+                        contextMenuStrip.Items.Add(updateRowMenuItem);
+
                         ToolStripMenuItem deleteRowMenuItem = new ToolStripMenuItem("Удалить строку");
                         deleteRowMenuItem.Click += DeleteRowMenuItem_Click;
                         contextMenuStrip.Items.Add(deleteRowMenuItem);
@@ -194,12 +191,6 @@ namespace curse
                     dbhelper.LoadDataToDt(dt, query);
                     if (dt.Rows.Count > 0)
                     {
-                        ToolStripMenuItem deleteRowMenuItem1 = new ToolStripMenuItem("Удалить строку");
-                        deleteRowMenuItem1.Click += DeleteRowMenuItem_ClickError;
-                        contextMenuStrip.Items.Add(deleteRowMenuItem1);
-
-                        // Показываем контекстное меню
-                        contextMenuStrip.Show(dataGridView1, dataGridView1.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, true).Location);
                         return;
                     }
                     else
@@ -244,7 +235,7 @@ namespace curse
         private void DeleteRowMenuItem_Click(object sender, EventArgs e)
         {
             // Проверяем, какие строки выбраны в DataGridView и удаляем их
-            if (dataGridView1.CurrentRow != null && dataGridView1.CurrentRow.Index >= 0)
+            if (dataGridView1.CurrentRow != null && dataGridView1.CurrentRow.Index >= 0 && MessageBox.Show("Вы уверены, что хотите удалить этот элемент?","Подтверждение удаления",MessageBoxButtons.YesNo,MessageBoxIcon.Warning) == DialogResult.Yes)
             {
                 int currendrowid = dataGridView1.CurrentRow.Index - 1;
                 dataGridView1.Rows.RemoveAt(currendrowid);
@@ -295,14 +286,14 @@ namespace curse
             comboBox1.Items.Add("По поставщику");
             comboBox1.Items.Add("По цене");
             comboBox1.Items.Add("По отатку на складе");
-            query = "SELECT p.product_name AS 'Наименование товара', c.category_name AS 'Категория', s.supplier_name AS 'Поставщик', p.price AS 'Цена', p.stock AS 'Остаток на складе' FROM products p JOIN categories c ON p.category_id = c.category_id JOIN suppliers s ON p.supplier_id = s.supplier_id";
+            query = "SELECT p.product_id, p.product_name AS 'Наименование товара', c.category_name AS 'Категория', s.supplier_name AS 'Поставщик', p.price AS 'Цена', p.stock AS 'Остаток на складе' FROM products p JOIN categories c ON p.category_id = c.category_id JOIN suppliers s ON p.supplier_id = s.supplier_id";
             table = "products";
-            id_string = "product_name";
+            id_string = "product_id";
 
             dbhelper.LoadDataToDGV(dataGridView1, query);
 
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells;
-
+            dataGridView1.Columns[0].Visible = false;
             textBox1.Text = "";
         }
 
@@ -311,13 +302,14 @@ namespace curse
             comboBox1.Items.Clear();
             comboBox1.Items.Add("По логину");
             comboBox1.Items.Add("По роли");
-            query = "SELECT username as 'Логин', email as 'Почта', password as 'Пароль', r.role_name as 'Роль' FROM users u JOIN roles r ON u.role = r.id";
+            query = "SELECT user_id, username as 'Логин', email as 'Почта', password as 'Пароль', r.role_name as 'Роль' FROM users u JOIN roles r ON u.role = r.id";
             table = "users";
-            id_string = "username";
+            id_string = "user_id";
 
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
             dbhelper.LoadDataToDGV(dataGridView1, query);
+            dataGridView1.Columns[0].Visible = false;
             textBox1.Text = "";
         }
 
@@ -329,7 +321,7 @@ namespace curse
             comboBox1.Items.Add("По телефону");
             query = "SELECT supplier_id, supplier_name as 'Наименование компании', contact_email as 'Электронная почта', phone as 'Контактный телефон' FROM suppliers";
             table = "suppliers";
-            id_string = "supplier_name";
+            id_string = "supplier_id";
 
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
@@ -567,6 +559,11 @@ namespace curse
                 }
                 dataGridView1.EditMode = DataGridViewEditMode.EditProgrammatically;
             }
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }
