@@ -57,7 +57,7 @@ namespace curse
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     string filePath = openFileDialog.FileName;
-                    dbhelper.ImportData(filePath, comboBox1.SelectedText.ToString());
+                    dbhelper.ImportData(filePath, comboBox1.SelectedItem.ToString());
                 }
             }
         }
