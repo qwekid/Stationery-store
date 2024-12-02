@@ -111,7 +111,7 @@ namespace curse
                         ToolStripMenuItem deleteRowMenuItem = new ToolStripMenuItem("Удалить строку");
                         deleteRowMenuItem.Click += DeleteRowMenuItem_Click;
                         contextMenuStrip.Items.Add(deleteRowMenuItem);
-                        // Показываем контекстное меню
+                        
                         contextMenuStrip.Show(dataGridView1, dataGridView1.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, true).Location);
                     }
 
