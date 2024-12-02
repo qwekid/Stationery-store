@@ -23,12 +23,16 @@ namespace curse
             string login = textBox1.Text;
             string password = textBox2.Text;
 
-            string wdawd = ConfigurationManager.AppSettings["LocalAdminUsername"];
-
             if (login == LocalAdminAccount.Username && password ==LocalAdminAccount.Password)
             {
                 LocalAdminForm laf = new LocalAdminForm();
-                laf.ShowDialog();
+                if (laf.ShowDialog() == DialogResult.OK)
+                {
+                    textBox1.Clear();
+                    textBox2.Clear();
+                    this.AuthForm_Load(sender, e);
+                }
+                
             }
             else
             {

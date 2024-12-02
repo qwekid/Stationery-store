@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Collections;
+using System.IO;
 
 namespace curse
 {
@@ -143,6 +144,60 @@ namespace curse
 
                 con.Close();
                 return 1;
+            }
+        }
+
+        public static void ImportData(string filePath, string tablename)
+        {
+            using (SqlConnection connection = new SqlConnection())
+            {
+                connection.ConnectionString = connectionString;
+                connection.Open();
+
+                using (StreamReader sr = new StreamReader(filePath))
+                {
+                    string line;
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        // Предполагается, что данные разделены запятыми
+                        var values = line.Split(',');
+
+                        string query = string.Empty;
+
+                        switch (tablename)
+                        {
+                            case "categories":
+                                query = $"INSERT INTO '{tablename}' (category_id, category_name, description) VALUES ({values[0]}, {values[1]}, {values[2]})";
+                                break;
+                            case "check":
+                                query = $"INSERT INTO '{tablename}' (products_product_id, sales_sale_id, quantity) VALUES ({values[0]}, {values[1]}, {values[2]})";
+                                break;
+                            case "products":
+                                query = $"INSERT INTO '{tablename}' (product_id, product_name, category_id, supplier_id, price, stock) VALUES ({values[0]}, {values[1]}, {values[2]}, {values[3]}, {values[4]}, {values[5]})";
+                                break;
+                            case "roles":
+                                query = $"INSERT INTO '{tablename}' (id, role_name) VALUES ({values[0]}, {values[1]})";
+                                break;
+                            case "sales":
+                                query = $"INSERT INTO '{tablename}' (sale_id, user_id, sale_date, total_amount, check_check_id) VALUES ({values[0]}, {values[1]}, {values[2]}, {values[3]}, {values[4]})";
+                                break;
+                            case "suppliers":
+                                query = $"INSERT INTO '{tablename}' (supplier_id, supplier_name, contact_email, phone) VALUES ({values[0]}, {values[1]}, {values[2]}, {values[3]})";
+                                break;
+                            case "users":
+                                query = $"INSERT INTO '{tablename}' (user_id, username, email, password, role) VALUES ({values[0]}, {values[1]}, {values[2]}, {values[3]}, {values[4]})";
+                                break;
+
+                        }
+                        
+
+                        using (SqlCommand command = new SqlCommand(query, connection))
+                        {
+                            command.ExecuteNonQuery();
+                        }
+                    }
+                }
+                MessageBox.Show("Данные успешно импортированы.");
             }
         }
     }
