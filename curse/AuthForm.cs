@@ -23,15 +23,16 @@ namespace curse
             string login = textBox1.Text;
             string password = textBox2.Text;
 
-            int role = dbhelper.CheckUserRole(login, password);
+            string wdawd = ConfigurationManager.AppSettings["LocalAdminUsername"];
 
-            if (login == ConfigurationManager.AppSettings["LocalAdminUsername"] && password == ConfigurationManager.AppSettings["LocalAdminPassword"])
+            if (login == LocalAdminAccount.Username && password ==LocalAdminAccount.Password)
             {
-
+                LocalAdminForm laf = new LocalAdminForm();
+                laf.ShowDialog();
             }
             else
             {
-
+                int role = dbhelper.CheckUserRole(login, password);
                 if (role == 2)
                 {
                     AdminForm a = new AdminForm();

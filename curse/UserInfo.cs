@@ -15,9 +15,9 @@ namespace curse
         public static int role;
     }
 
-    public class LocalAccount
+    public static class LocalAdminAccount
     {
-        public string Username { get; set; }
-        public string Password { get; set; }
+        public static readonly string Username = "ladmin";
+        public static readonly string Password = "ladmin";
     }
 }
