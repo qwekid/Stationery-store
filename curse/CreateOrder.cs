@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Office.Interop.Word;
+using MySqlX.XDevAPI.Relational;
+using System;
 using System.Data;
 using System.Windows.Forms;
 
@@ -48,7 +50,7 @@ namespace curse
 
         private void CreateOrder_Load(object sender, EventArgs e)
         {
-            DataTable dt = new DataTable();
+            System.Data.DataTable dt = new System.Data.DataTable();
 
             comboBox1.Items.Clear();
             query = "SELECT product_name FROM products";
@@ -72,7 +74,7 @@ namespace curse
 
         private void button1_Click(object sender, EventArgs e)
         {
-            DataTable dt = new DataTable();
+            System.Data.DataTable dt = new System.Data.DataTable();
             int totalamount =0;
             if (label2.Text != "") { totalamount = Convert.ToInt32(label2.Text); }
             if (comboBox1.SelectedIndex != -1 && textBox2.Text != "")
@@ -123,9 +125,10 @@ namespace curse
         }
 
         private void button3_Click(object sender, EventArgs e)
-        {   if (dataGridView1.Rows.Count > 0)
+        {
+            if (dataGridView1.Rows.Count > 0)
             {
-                DataTable dt = new DataTable();
+                System.Data.DataTable dt = new System.Data.DataTable();
                 DateTime dateTime = DateTime.Now;
                 string saleDate = dateTime.ToString("yyyy-MM-dd HH:mm:ss");
                 int userId = UserInfo.id;
@@ -135,13 +138,13 @@ namespace curse
                 long salesId = dbhelper.InsertDataOnDb(insertSalesrQuery);
                 foreach (DataGridViewRow row in dataGridView1.Rows)
                 {
+                    dt = new System.Data.DataTable();
                     query = $"select product_id from products where product_name = '{row.Cells[0].Value}'";
                     dbhelper.LoadDataToDt(dt, query);
                     int quantity = Convert.ToInt32(row.Cells[4].Value);
                     int product_id = Convert.ToInt32(dt.Rows[0].ItemArray.GetValue(0));
-                    string insertCheckQuery = $"INSERT INTO `officesupplies`.`check` (`products_product_id`, `sales_sale_id`, `quantity`) VALUES ('{product_id}', '{salesId}', '{quantity}');";
-                    
-                    
+
+
                     query = $"Select stock from products where product_id = {product_id}";
                     dt.Clear();
                     dbhelper.LoadDataToDt(dt, query);
@@ -157,21 +160,62 @@ namespace curse
                         dataGridView1.Rows.Clear();
                         return;
                     }
-                    else {
-                        long checkId = dbhelper.InsertDataOnDb(insertCheckQuery);
-                        query = $"UPDATE `officesupplies`.`sales` SET `check_check_id` = '{checkId}' WHERE (`sale_id` = '{salesId}');";
-                        dbhelper.InsertDataOnDb(query);
+                    else
+                    {
+                        string insertCheckQuery = $"INSERT INTO `officesupplies`.`check` (`products_product_id`, `sales_sale_id`, `quantity`) VALUES ('{product_id}', '{salesId}', '{quantity}');";
+                        dbhelper.InsertDataOnDb(insertCheckQuery);
 
                         query = $"UPDATE `officesupplies`.`products` SET `stock` = '{new_stock}' WHERE (`product_id` = '{product_id}');";
                         dbhelper.InsertDataOnDb(query);
+
+                        
+
+                        //создание чека
+
+                        Microsoft.Office.Interop.Word.Application wordApp = new Microsoft.Office.Interop.Word.Application();
+                        wordApp.Visible = true; // Чтобы увидеть Word
+
+                        // Создаем новый документ
+                        Microsoft.Office.Interop.Word.Document document = wordApp.Documents.Add();
+
+                        int rows = dataGridView1.Rows.Count + 2; // Увеличиваем на 1 для заголовков
+                        int columns = 4;
+
+                        Range headerRange = document.Sections[1].Headers[WdHeaderFooterIndex.wdHeaderFooterPrimary].Range;
+                        headerRange.Text = $"Товарный чек по продаже №{salesId}";
+
+                        Range range = document.Range();
+                        Microsoft.Office.Interop.Word.Table table = document.Tables.Add(range, rows, columns);
+                        table.Borders.Enable = 1; // Включаем границы таблицы
+
+
+                        table.Rows[1].Cells[1].Range.Text = "Наименование товара";
+                        table.Rows[1].Cells[2].Range.Text = "Стоимость товара";
+                        table.Rows[1].Cells[3].Range.Text = "Количество товара";
+                        table.Rows[1].Cells[4].Range.Text = "Итого";
+
+                        
+
+                        // Заполняем таблицу данными
+                        for (int i = 0; i < dataGridView1.Rows.Count; i++)
+                        {
+                            table.Cell(i + 2, 1).Range.Text = dataGridView1.Rows[i].Cells[0].Value.ToString();
+                            table.Cell(i + 2, 2).Range.Text = dataGridView1.Rows[i].Cells[3].Value.ToString();
+                            table.Cell(i + 2, 3).Range.Text = dataGridView1.Rows[i].Cells[4].Value.ToString();
+                            table.Cell(i + 2, 4).Range.Text = Convert.ToString(Convert.ToInt32(dataGridView1.Rows[i].Cells[4].Value) * Convert.ToInt32(dataGridView1.Rows[i].Cells[3].Value));
+                        }
+
+                        
+
+                        table.Cell(dataGridView1.Rows.Count + 2, 4).Range.Text = totalAmount.ToString();
+
+                        MessageBox.Show("Заказ успешно создан");
+
+                        comboBox1.SelectedIndex = -1;
+                        textBox2.Text = "";
+                        dataGridView1.Rows.Clear();
                     }
                 }
-
-                comboBox1.SelectedIndex = -1 ;
-                textBox2.Text = "";
-                dataGridView1.Rows.Clear();
-
-                MessageBox.Show("Заказ успешно создан");
             }
             else { MessageBox.Show("Вы не добавили товаров!"); }
         }
