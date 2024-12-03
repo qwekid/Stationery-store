@@ -181,7 +181,7 @@ namespace curse
                                     query = $"INSERT INTO `{tablename}` (product_id, product_name, category_id, supplier_id, price, stock) VALUES ({values[0]}, {values[1]}, {values[2]}, {values[3]}, {values[4]}, {values[5]})";
                                     break;
                                 case "roles":
-                                    query = $"INSERT INTO `{tablename}` (role_id, role_name) VALUES ({values[0]},{values[1]})";
+                                    query = $"INSERT INTO `{tablename}` (id, role_name) VALUES ({values[0]},{values[1]})";
                                     break;
                                 case "sales":
                                     query = $"INSERT INTO `{tablename}` (sale_id, user_id, sale_date, total_amount, check_check_id) VALUES ({values[0]}, {values[1]}, {values[2]}, {values[3]}, {values[4]})";
@@ -195,11 +195,14 @@ namespace curse
 
                             }
 
-
-                            using (MySqlCommand command = new MySqlCommand(query, con))
+                            try
                             {
-                                command.ExecuteNonQuery();
+                                using (MySqlCommand command = new MySqlCommand(query, con))
+                                {
+                                    command.ExecuteNonQuery();
+                                }
                             }
+                            catch (Exception ex) { MessageBox.Show($"{ex.Message}"); }
                         }
                     }
                 }
