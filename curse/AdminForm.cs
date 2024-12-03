@@ -210,11 +210,24 @@ namespace curse
 
         private void UpdateRowMenuItem_Click(object sender, EventArgs e)
         {
+            DataTable dt = new DataTable();
             switch (table) {
                 case ("products"):
                     if (MessageBox.Show("Вы уверены, что хотите редактировать этот элемент?", "Подтверждение редактирования", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                     {
-                        MessageBox.Show("фцвфцв");
+                        
+                        query = "Select category_name from categories";
+                        dbhelper.LoadDataToDt(dt, query);
+
+                        string name = dt.Rows[0].ItemArray[0].ToString();
+                        dt.Clear();
+                        query = "Select ";
+                        int category; 
+                        int suplier; 
+                        int price; 
+                        int quantity;
+                        //CreateProduct p = new CreateProduct(dataGridView1.CurrentRow.Cells[0].Value.ToString(),);
+                        //p.ShowDialog();
                     }
                     break;
                 case ("categories"):

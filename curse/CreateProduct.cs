@@ -19,10 +19,7 @@ namespace curse
         public CreateProduct()
         {
             InitializeComponent();
-        }
 
-        private void CreateProduct_Load(object sender, EventArgs e)
-        {
             DataTable dt = new DataTable();
 
             comboBox1.Items.Clear();
@@ -41,6 +38,42 @@ namespace curse
             {
                 comboBox2.Items.Add(dt.Rows[i].ItemArray.GetValue(0).ToString());
             }
+
+        }
+
+        public CreateProduct(string name, int category, int suplier, int price, int quantity) :this()
+        {
+            
+            DataTable dt = new DataTable();
+
+            comboBox1.Items.Clear();
+            query = "SELECT category_name FROM categories";
+            dbhelper.LoadDataToDt(dt, query);
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                comboBox1.Items.Add(dt.Rows[i].ItemArray.GetValue(0).ToString());
+            }
+
+            comboBox2.Items.Clear();
+            query = "SELECT supplier_name FROM suppliers";
+            dt = new DataTable();
+            dbhelper.LoadDataToDt(dt, query);
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                comboBox2.Items.Add(dt.Rows[i].ItemArray.GetValue(0).ToString());
+            }
+
+            textBox1.Text = name;
+            comboBox1.SelectedIndex = category;
+            comboBox2.SelectedIndex = suplier;
+            textBox2.Text = price.ToString();
+            textBox3.Text = quantity.ToString();
+        }
+
+
+        private void CreateProduct_Load(object sender, EventArgs e)
+        {
+           
         }
 
         private void button2_Click(object sender, EventArgs e)
