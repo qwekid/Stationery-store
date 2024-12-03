@@ -51,13 +51,16 @@ namespace curse
 
         private void button3_Click(object sender, EventArgs e)
         {
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            if (comboBox1.SelectedIndex != -1)
             {
-                openFileDialog.Filter = "CSV файлы с раделителем ',' (*.csv)|*.csv";
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                using (OpenFileDialog openFileDialog = new OpenFileDialog())
                 {
-                    string filePath = openFileDialog.FileName;
-                    dbhelper.ImportData(filePath, comboBox1.SelectedItem.ToString());
+                    openFileDialog.Filter = "CSV файлы с раделителем ',' (*.csv)|*.csv";
+                    if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        string filePath = openFileDialog.FileName;
+                        dbhelper.ImportData(filePath, comboBox1.SelectedItem.ToString());
+                    }
                 }
             }
         }
