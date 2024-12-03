@@ -202,7 +202,7 @@ namespace curse
                                     command.ExecuteNonQuery();
                                 }
                             }
-                            catch (Exception ex) { MessageBox.Show($"{ex.Message}"); }
+                            catch (Exception ex) { MessageBox.Show($"Ошибка: {ex.Message}"); }
                         }
                     }
                 }
