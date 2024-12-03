@@ -32,7 +32,7 @@ namespace curse
                     textBox2.Clear();
                     this.AuthForm_Load(sender, e);
                 }
-                
+                return;
             }
             else
             {

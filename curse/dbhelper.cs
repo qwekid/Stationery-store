@@ -76,6 +76,8 @@ namespace curse
             catch(IndexOutOfRangeException) { return 0; }
         }
 
+        
+
         static public void LoadDataToDt(DataTable dt, string query)
         {
             using (MySqlConnection con = new MySqlConnection())
