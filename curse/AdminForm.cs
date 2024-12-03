@@ -204,27 +204,38 @@ namespace curse
 
 
                 }
-                else
-                {
-                    ToolStripMenuItem updateRowMenuItem = new ToolStripMenuItem("Редактировать строку");
-                    updateRowMenuItem.Click += UpdateRowMenuItem_Click;
-                    contextMenuStrip.Items.Clear();
-                    contextMenuStrip.Items.Add(updateRowMenuItem);
-
-                    ToolStripMenuItem deleteRowMenuItem = new ToolStripMenuItem("Удалить строку");
-                    deleteRowMenuItem.Click += DeleteRowMenuItem_Click;
-                    contextMenuStrip.Items.Clear();
-                    contextMenuStrip.Items.Add(deleteRowMenuItem);
-                    // Показываем контекстное меню
-                    contextMenuStrip.Show(dataGridView1, dataGridView1.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, true).Location);
-                }
             }
             
         }
 
         private void UpdateRowMenuItem_Click(object sender, EventArgs e)
         {
-            this.dataGridView1.EditMode = DataGridViewEditMode.EditOnKeystroke;
+            switch (table) {
+                case ("products"):
+                    if (MessageBox.Show("Вы уверены, что хотите редактировать этот элемент?", "Подтверждение редактирования", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                    {
+                        MessageBox.Show("фцвфцв");
+                    }
+                    break;
+                case ("categories"):
+                    if (MessageBox.Show("Вы уверены, что хотите редактировать этот элемент?", "Подтверждение редактирования", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                    {
+                        MessageBox.Show("фцвфцв");
+                    }
+                    break;
+                case ("users"):
+                    if (MessageBox.Show("Вы уверены, что хотите редактировать этот элемент?", "Подтверждение редактирования", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                    {
+                        MessageBox.Show("фцвфцв");
+                    }
+                    break;
+                case ("suppliers"):
+                    if (MessageBox.Show("Вы уверены, что хотите редактировать этот элемент?", "Подтверждение редактирования", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                    {
+                        MessageBox.Show("фцвфцв");
+                    }
+                    break;
+            }
             
         }
         

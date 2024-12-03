@@ -91,19 +91,19 @@ namespace curse
 
 
             // Создаем полный путь к папке приложения в папке "docs"
-            string appFolderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            //string appFolderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
             // Проверяем,_exists ли папка, и создаем ее, если нет
-            if (!Directory.Exists(appFolderPath))
-            {
-                Directory.CreateDirectory(appFolderPath);
-            }
+            //if (!Directory.Exists(appFolderPath))
+            //{
+             //   Directory.CreateDirectory(appFolderPath);
+            //}
 
             // Указываем имя файла, который хотим сохранить
             string fileName = @"report" + DateTime.Now.ToString("yyyy-MM-dd--HH-mm-ss") + ".docx";
 
             // Полный путь к файлу
-            string filePath = Path.Combine(appFolderPath, fileName);
+            //string filePath = Path.Combine(appFolderPath, fileName);
             //document.SaveAs2(filePath); // Сохраняем документ
             //document.Save();
             // Закрываем документ
