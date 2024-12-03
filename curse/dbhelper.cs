@@ -149,6 +149,7 @@ namespace curse
 
         public static void ImportData(string filePath, string tablename)
         {
+            int counter = 0;
             using (MySqlConnection con = new MySqlConnection())
             {
                 con.ConnectionString = connectionString;
@@ -156,7 +157,9 @@ namespace curse
 
                 bool isFirstStr = true;
 
-                using (StreamReader sr = new StreamReader(filePath))
+                Encoding encoding = Encoding.GetEncoding(1251);
+
+                using (StreamReader sr = new StreamReader(filePath, encoding))
                 {
                     string line;
                     while ((line = sr.ReadLine()) != null)
@@ -200,13 +203,14 @@ namespace curse
                                 using (MySqlCommand command = new MySqlCommand(query, con))
                                 {
                                     command.ExecuteNonQuery();
+                                    counter++;
                                 }
                             }
                             catch (Exception ex) { MessageBox.Show($"Ошибка: {ex.Message}"); }
                         }
                     }
                 }
-                MessageBox.Show("Данные успешно импортированы.");
+                MessageBox.Show($"Данные успешно импортированы. Добавлено {counter} записей");
             }
         }
     }
