@@ -549,7 +549,7 @@ namespace curse
                         CreateOrder sales = new CreateOrder();
                         if (sales.ShowDialog() == DialogResult.OK)
                         {
-                            // Обновляем данные на первой форме
+                            
                             this.AdminForm_Load(sender, e);
                         }
 
