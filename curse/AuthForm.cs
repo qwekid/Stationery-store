@@ -21,6 +21,7 @@ namespace curse
         PictureBox PB = new PictureBox { Top = 10, Left = 230 };
         TextBox capchaTextBox = new TextBox { Left = 230, Top = 95 };
         Button confirmCapchaButton = new Button { Left = 230, Top = 130, Width = 100 };
+        Button updateCapchaButton = new Button { Left = 230, Top = 165, Width = 100 };
 
         public AuthForm()
         {
@@ -86,10 +87,26 @@ namespace curse
                 confirmCapchaButton.Text = "Проверить";
                 confirmCapchaButton.Click += ConfirmCapchaButton_Click;
 
+                updateCapchaButton.Text = "Обновить капчу";
+                updateCapchaButton.Click += UpdateCapchaButton_Click;
+
                 this.Controls.Add(PB);
                 this.Controls.Add(capchaTextBox);
                 this.Controls.Add(confirmCapchaButton);
+                this.Controls.Add(updateCapchaButton);
+                
             }
+        }
+
+        private void UpdateCapchaButton_Click(object sender, EventArgs e)
+        {
+            textBox1.Enabled = false;
+            textBox2.Enabled = false;
+
+
+            currentcapcha = Capcha.GenerateCaptcha();
+            Bitmap capchaImg = Capcha.DrawCaptcha(currentcapcha);
+            PB.Image = capchaImg;
         }
 
         private void ConfirmCapchaButton_Click(object sender, EventArgs e)
