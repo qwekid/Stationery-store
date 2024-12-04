@@ -6,6 +6,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -81,7 +82,7 @@ namespace curse
 
 
                 capchaTextBox.Font = new Font(label1.Font.Name, 14.25F);
-                int a = capchaTextBox.Width;
+                capchaTextBox.MaxLength = 4;
 
                 
                 confirmCapchaButton.Text = "Проверить";
@@ -111,17 +112,18 @@ namespace curse
 
         private void ConfirmCapchaButton_Click(object sender, EventArgs e)
         {
-            if (currentcapcha == capchaTextBox.Text) {
+            if (currentcapcha == capchaTextBox.Text)
+            {
                 textBox1.Enabled = true;
                 textBox2.Enabled = true;
 
                 this.Width = 201;
 
-                //this.Controls.Remove(capchaTextBox);
-                //this.Controls.Remove(PB);
-                //this.Controls.Remove(confirmCapchaButton);
-
                 this.AuthForm_Load(sender, e);
+            }
+            else {
+                MessageBox.Show("Капча введена не правильно, система заблокиравана на 10 секунд");
+                Thread.Sleep(10000);
             }
         }
 
