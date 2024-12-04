@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Office.Interop.Word;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -91,7 +92,7 @@ namespace curse
             {
                 if (table == "products") 
                 {
-                    DataTable dt = new DataTable();
+                    System.Data.DataTable dt = new System.Data.DataTable();
                     int currendrowid = dataGridView1.CurrentRow.Index;
 
                     contextMenuStrip.Items.Clear();
@@ -120,57 +121,49 @@ namespace curse
                 }
                 else if (table == "categories")
                 {
-                    DataTable dt = new DataTable();
+                    System.Data.DataTable dt = new System.Data.DataTable();
                     int currendrowid = dataGridView1.CurrentRow.Index;
                     query = $"select category_name from `check` c join products p on c.products_product_id = p.product_id join categories cat on p.category_id = cat.category_id where product_name = '{dataGridView1.Rows[currendrowid].Cells[0].Value}' ";
                     dbhelper.LoadDataToDt(dt, query);
 
-                    ToolStripMenuItem updateRowMenuItem = new ToolStripMenuItem("Редактировать строку");
-                    updateRowMenuItem.Click += UpdateRowMenuItem_Click;
-                    contextMenuStrip.Items.Clear();
-                    contextMenuStrip.Items.Add(updateRowMenuItem);
-
                     if (dt.Rows.Count > 0)
                     {
-                        ToolStripMenuItem deleteRowMenuItem1 = new ToolStripMenuItem("Удалить строку");
-                        deleteRowMenuItem1.Click += DeleteRowMenuItem_ClickError;
-                        contextMenuStrip.Items.Add(deleteRowMenuItem1);
-                        // Показываем контекстное меню
-                        contextMenuStrip.Show(dataGridView1, dataGridView1.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, true).Location);
                         return;
                     }
                     else
                     {
-                        ToolStripMenuItem deleteRowMenuItem = new ToolStripMenuItem("Удалить строку");
-                        deleteRowMenuItem.Click += DeleteRowMenuItem_Click;
-                        contextMenuStrip.Items.Add(deleteRowMenuItem);
+                        ToolStripMenuItem updateRowMenuItem = new ToolStripMenuItem("Редактировать строку");
+                        updateRowMenuItem.Click += UpdateRowMenuItem_Click;
+                        contextMenuStrip.Items.Clear();
+                        contextMenuStrip.Items.Add(updateRowMenuItem);
+
+                        ToolStripMenuItem deleteRowMenuItem1 = new ToolStripMenuItem("Удалить строку");
+                        deleteRowMenuItem1.Click += DeleteRowMenuItem_ClickError;
+                        contextMenuStrip.Items.Add(deleteRowMenuItem1);
                         // Показываем контекстное меню
                         contextMenuStrip.Show(dataGridView1, dataGridView1.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, true).Location);
                     }
                 }
                 else if (table == "users")
                 {
-                    DataTable dt = new DataTable();
+                    System.Data.DataTable dt = new System.Data.DataTable();
                     int currendrowid = dataGridView1.CurrentRow.Index;
                     query = $"select username from sales s join users u on s.user_id = u.user_id where username = '{dataGridView1.Rows[currendrowid].Cells[0].Value}' ";
                     dbhelper.LoadDataToDt(dt, query);
 
-                    ToolStripMenuItem updateRowMenuItem = new ToolStripMenuItem("Редактировать строку");
-                    updateRowMenuItem.Click += UpdateRowMenuItem_Click;
-                    contextMenuStrip.Items.Clear();
-                    contextMenuStrip.Items.Add(updateRowMenuItem);
+                    
 
                     if (dt.Rows.Count > 0)
                     {
-                        ToolStripMenuItem deleteRowMenuItem1 = new ToolStripMenuItem("Удалить строку");
-                        deleteRowMenuItem1.Click += DeleteRowMenuItem_ClickError;
-                        contextMenuStrip.Items.Add(deleteRowMenuItem1);
-                        // Показываем контекстное меню
-                        contextMenuStrip.Show(dataGridView1, dataGridView1.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, true).Location);
                         return;
                     }
                     else
                     {
+                        ToolStripMenuItem updateRowMenuItem = new ToolStripMenuItem("Редактировать строку");
+                        updateRowMenuItem.Click += UpdateRowMenuItem_Click;
+                        contextMenuStrip.Items.Clear();
+                        contextMenuStrip.Items.Add(updateRowMenuItem);
+
                         ToolStripMenuItem deleteRowMenuItem = new ToolStripMenuItem("Удалить строку");
                         deleteRowMenuItem.Click += DeleteRowMenuItem_Click;
                         contextMenuStrip.Items.Add(deleteRowMenuItem);
@@ -180,16 +173,8 @@ namespace curse
                 }
                 if (table == "suppliers")
                 {
-                    DataTable dt = new DataTable();
+                    System.Data.DataTable dt = new System.Data.DataTable();
                     int currendrowid = dataGridView1.CurrentRow.Index;
-
-
-                    ToolStripMenuItem updateRowMenuItem = new ToolStripMenuItem("Редактировать строку");
-                    updateRowMenuItem.Click += UpdateRowMenuItem_Click;
-                    contextMenuStrip.Items.Clear();
-                    contextMenuStrip.Items.Add(updateRowMenuItem);
-
-                    
 
                     query = $"select supplier_name from suppliers where supplier_name = '{dataGridView1.Rows[currendrowid].Cells[0].Value}'";
                     dbhelper.LoadDataToDt(dt, query);
@@ -204,6 +189,11 @@ namespace curse
                         contextMenuStrip.Items.Add(deleteRowMenuItem);
                         // Показываем контекстное меню
                         contextMenuStrip.Show(dataGridView1, dataGridView1.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, true).Location);
+
+                        ToolStripMenuItem updateRowMenuItem = new ToolStripMenuItem("Редактировать строку");
+                        updateRowMenuItem.Click += UpdateRowMenuItem_Click;
+                        contextMenuStrip.Items.Clear();
+                        contextMenuStrip.Items.Add(updateRowMenuItem);
                     }
 
 
@@ -214,7 +204,7 @@ namespace curse
 
         private void UpdateRowMenuItem_Click(object sender, EventArgs e)
         {
-            DataTable dt = new DataTable();
+            System.Data.DataTable dt = new System.Data.DataTable();
             switch (table) {
                 case ("products"):
                     if (MessageBox.Show("Вы уверены, что хотите редактировать этот элемент?", "Подтверждение редактирования", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
@@ -224,12 +214,12 @@ namespace curse
                         dbhelper.LoadDataToDt(dt, query);
 
                         int category =Convert.ToInt32(dt.Rows[0].ItemArray[0]);
-                        dt = new DataTable();
+                        dt = new System.Data.DataTable();
 
                         query = $"Select supplier_id from suppliers where supplier_name = '{dataGridView1.CurrentRow.Cells[3].Value}'";
                         dbhelper.LoadDataToDt(dt, query);
                         int suplier = Convert.ToInt32(dt.Rows[0].ItemArray[0]);
-                        dt = new DataTable();
+                        dt = new System.Data.DataTable();
 
                         int price = Convert.ToInt32(dataGridView1.CurrentRow.Cells[4].Value);
                         int quantity = Convert.ToInt32(dataGridView1.CurrentRow.Cells[5].Value);
@@ -240,7 +230,11 @@ namespace curse
                 case ("categories"):
                     if (MessageBox.Show("Вы уверены, что хотите редактировать этот элемент?", "Подтверждение редактирования", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                     {
-                        MessageBox.Show("фцвфцв");
+                        int id = Convert.ToInt32(dataGridView1.CurrentRow.Cells[0].Value);
+                        string name = dataGridView1.CurrentRow.Cells[1].Value.ToString();
+                        string desc = dataGridView1.CurrentRow.Cells[2].Value.ToString();
+                        CreateCategory p = new CreateCategory(id,name, desc);
+                        p.ShowDialog();
                     }
                     break;
                 case ("users"):

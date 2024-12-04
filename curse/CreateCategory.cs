@@ -12,26 +12,58 @@ namespace curse
 {
     public partial class CreateCategory : Form
     {
+        private static bool isRedact;
+        private static int Id;
         public CreateCategory()
         {
             InitializeComponent();
             this.ControlBox = false;
+            isRedact = false;
+        }
+
+        public CreateCategory(int id,string name, string desc) : this()
+        {
+            Id = id;
+            textBox1.Text = name;
+            textBox2.Text = desc;
+            isRedact = true;
+            button1.Text = "Внести изменения";
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (textBox1.Text != "" && textBox2.Text != "")
+            if (!isRedact)
             {
-                string category_name = textBox1.Text;
-                string catefory_desc = textBox2.Text;
+                if (textBox1.Text != "" && textBox2.Text != "")
+                {
+                    string category_name = textBox1.Text;
+                    string catefory_desc = textBox2.Text;
 
-                string query = $"INSERT INTO `officesupplies`.`categories` (`category_name`, `description`) VALUES ('{category_name}', '{catefory_desc}');";
-                dbhelper.InsertDataOnDb(query);
+                    string query = $"INSERT INTO `officesupplies`.`categories` (`category_name`, `description`) VALUES ('{category_name}', '{catefory_desc}');";
+                    dbhelper.InsertDataOnDb(query);
 
-                MessageBox.Show("Категория успешно добавлена");
+                    MessageBox.Show("Категория успешно добавлена");
+                }
+                else
+                {
+                    MessageBox.Show("Заполните все поля!");
+                }
             }
-            else{
-                MessageBox.Show("Заполните все поля!"); 
+            else {
+                if (textBox1.Text != "" && textBox2.Text != "")
+                {
+                    string category_name = textBox1.Text;
+                    string catefory_desc = textBox2.Text;
+
+                    string query = $"UPDATE `officesupplies`.`categories` SET `category_name` = '{category_name}', `description` = '{catefory_desc}' WHERE (`category_id` = '{Id}');";
+                    dbhelper.InsertDataOnDb(query);
+
+                    MessageBox.Show("Категория успешно отредактирована");
+                }
+                else
+                {
+                    MessageBox.Show("Заполните все поля!");
+                }
             }
         }
 
