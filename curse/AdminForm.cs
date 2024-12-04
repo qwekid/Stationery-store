@@ -19,6 +19,10 @@ namespace curse
         private static string table = string.Empty;
         private static string id_string = string.Empty;
 
+
+        private static readonly string viewproductsquery = "SELECT p.product_id, p.product_name AS 'Наименование товара', c.category_name AS 'Категория', s.supplier_name AS 'Поставщик', p.price AS 'Цена', p.stock AS 'Остаток на складе' FROM products p JOIN categories c ON p.category_id = c.category_id JOIN suppliers s ON p.supplier_id = s.supplier_id";
+        private static readonly string viewcategoriesquery = "SELECT category_id,  category_name as 'Наименование категории', description as 'Описание категории' FROM categories";
+        private static readonly string viewusersquery ="SELECT user_id, username as 'Логин', email as 'Почта', password as 'Пароль', r.role_name as 'Роль' FROM users u JOIN roles r ON u.role = r.id";
         private ContextMenuStrip contextMenuStrip;
         public AdminForm()
         {
@@ -30,7 +34,7 @@ namespace curse
         {
             comboBox1.Items.Clear();
             comboBox1.Items.Add("По наименованию");
-            query = "SELECT category_id,  category_name as 'Наименование категории', description as 'Описание категории' FROM categories";
+            query = viewcategoriesquery;
             table = "categories";
             id_string = "category_id";
             dbhelper.LoadDataToDGV(dataGridView1, query);
@@ -70,11 +74,11 @@ namespace curse
             comboBox1.Items.Add("По поставщику");
             comboBox1.Items.Add("По цене");
             comboBox1.Items.Add("По отатку на складе");
-            query = "SELECT p.product_name AS 'Наименование товара', c.category_name AS 'Категория', s.supplier_name AS 'Поставщик', p.price AS 'Цена', p.stock AS 'Остаток на складе' FROM products p JOIN categories c ON p.category_id = c.category_id JOIN suppliers s ON p.supplier_id = s.supplier_id;";
+            query = viewproductsquery;
             table = "products";
             id_string = "product_name";
             dbhelper.LoadDataToDGV(dataGridView1, query);
-
+            dataGridView1.Columns[0].Visible = false;
             contextMenuStrip = new ContextMenuStrip();
 
         }
@@ -216,18 +220,21 @@ namespace curse
                     if (MessageBox.Show("Вы уверены, что хотите редактировать этот элемент?", "Подтверждение редактирования", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                     {
                         
-                        query = "Select category_name from categories";
+                        query = $"Select category_id from categories where category_name = '{dataGridView1.CurrentRow.Cells[2].Value}'";
                         dbhelper.LoadDataToDt(dt, query);
 
-                        string name = dt.Rows[0].ItemArray[0].ToString();
-                        dt.Clear();
-                        query = "Select ";
-                        int category; 
-                        int suplier; 
-                        int price; 
-                        int quantity;
-                        //CreateProduct p = new CreateProduct(dataGridView1.CurrentRow.Cells[0].Value.ToString(),);
-                        //p.ShowDialog();
+                        int category =Convert.ToInt32(dt.Rows[0].ItemArray[0]);
+                        dt = new DataTable();
+
+                        query = $"Select supplier_id from suppliers where supplier_name = '{dataGridView1.CurrentRow.Cells[3].Value}'";
+                        dbhelper.LoadDataToDt(dt, query);
+                        int suplier = Convert.ToInt32(dt.Rows[0].ItemArray[0]);
+                        dt = new DataTable();
+
+                        int price = Convert.ToInt32(dataGridView1.CurrentRow.Cells[4].Value);
+                        int quantity = Convert.ToInt32(dataGridView1.CurrentRow.Cells[5].Value);
+                        CreateProduct p = new CreateProduct(Convert.ToInt32(dataGridView1.CurrentRow.Cells[0].Value), dataGridView1.CurrentRow.Cells[1].Value.ToString(), category, suplier, price, quantity);
+                        p.ShowDialog();
                     }
                     break;
                 case ("categories"):
@@ -265,12 +272,13 @@ namespace curse
                 dataGridView1.Rows.RemoveAt(currendrowid);
                 query = $"DELETE FROM `officesupplies`.`{table}` WHERE (`{id_string}` = '{dataGridView1.Rows[currendrowid].Cells[0].Value}');";
                 dbhelper.InsertDataOnDb(query);
-                if (table == "products") { query = $"SELECT p.product_name AS \"Наименование товара\", c.category_name AS \"Категория\", s.supplier_name AS \"Поставщик\", p.price AS \"Цена\", p.stock AS \"Остаток на складе\" FROM products p JOIN categories c ON p.category_id = c.category_id JOIN suppliers s ON p.supplier_id = s.supplier_id;"; }
-                else if (table == "categories") { query = $"SELECT category_name as 'Наименование категории', description as 'Описание категории' FROM categories"; }
+                if (table == "products") { query = viewproductsquery;}
+                else if (table == "categories") { query = viewcategoriesquery; }
                 else if (table == "sales") { query = $" SELECT u.username AS 'Продавец',GROUP_CONCAT(CONCAT(p.product_name, ': ', c.quantity, ' шт.') SEPARATOR '; ') AS 'Товары',s.sale_date AS 'Дата продажи',s.total_amount AS 'Финальная стоимость' FROM sales s JOIN users u ON s.user_id = u.user_id JOIN `check` c ON s.check_check_id = c.sales_sale_id JOIN products p ON c.products_product_id = p.product_id;"; }
-                else if (table == "users") { query = $"SELECT username as 'Логин', email as 'Почта', password as 'Пароль', r.role_name as 'Роль' FROM users u JOIN roles r ON u.role = r.id"; }
+                else if (table == "users") { query = viewusersquery; }
                 else if (table == "suppliers") { query = $"SELECT supplier_name as 'Наименование компании', contact_email as 'Электронная почта', phone as 'Контактный телефон' FROM suppliers"; }
                 dbhelper.LoadDataToDGV(dataGridView1, query);
+                dataGridView1.Columns[0].Visible = false;
             }
 
         }
@@ -282,14 +290,15 @@ namespace curse
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
             string txt = textBox1.Text;
-            if (table == "products") { query = $"SELECT p.product_name AS \"Наименование товара\", c.category_name AS \"Категория\", s.supplier_name AS \"Поставщик\", p.price AS \"Цена\", p.stock AS \"Остаток на складе\" FROM products p JOIN categories c ON p.category_id = c.category_id JOIN suppliers s ON p.supplier_id = s.supplier_id WHERE p.product_name LIKE '%{txt}%' OR s.supplier_name LIKE '%{txt}%' OR p.price LIKE '%{txt}%' OR p.stock LIKE '%{txt}%';"; }
-            else if (table == "categories") { query = $"SELECT category_name as 'Наименование категории', description as 'Описание категории' FROM categories Where category_name Like '%{txt}%'"; }
+            if (table == "products") { query = viewproductsquery + $" WHERE p.product_name LIKE '%{txt}%' OR s.supplier_name LIKE '%{txt}%' OR p.price LIKE '%{txt}%' OR p.stock LIKE '%{txt}%';"; }
+            else if (table == "categories") { query = viewcategoriesquery + $" WHERE category_name LIKE '%{txt}%'"; }
             else if (table == "sales") { query = $" SELECT u.username AS 'Продавец',GROUP_CONCAT(CONCAT(p.product_name, ': ', c.quantity, ' шт.') SEPARATOR '; ') AS 'Товары',s.sale_date AS 'Дата продажи',s.total_amount AS 'Финальная стоимость' FROM sales s JOIN users u ON s.user_id = u.user_id JOIN `check` c ON s.check_check_id = c.sales_sale_id JOIN products p ON c.products_product_id = p.product_id WHERE u.username LIKE '%{txt}%' OR p.product_name LIKE '%{txt}%' OR c.quantity LIKE '%{txt}%' OR s.sale_date LIKE '%{txt}%' OR s.total_amount LIKE '%{txt}%' GROUP BY s.sale_id, u.username, u.email, s.sale_date, s.total_amount;"; }
-            else if (table == "users") { query = $"SELECT username as 'Логин', email as 'Почта', password as 'Пароль', r.role_name as 'Роль' FROM users u JOIN roles r ON u.role = r.id Where username Like '%{txt}%'"; ; }
+            else if (table == "users") { query = viewusersquery+ $" Where username Like '%{txt}%'"; ; }
             else if (table == "suppliers") { query = $"SELECT supplier_name as 'Наименование компании', contact_email as 'Электронная почта', phone as 'Контактный телефон' FROM suppliers Where supplier_name Like '%{txt}%' OR contact_email Like '%{txt}%' OR phone Like '%{txt}%'"; }
            
 
             dbhelper.LoadDataToDGV(dataGridView1, query);
+            dataGridView1.Columns[0].Visible = false;
         }
 
         private void button7_Click(object sender, EventArgs e)
@@ -310,7 +319,7 @@ namespace curse
             comboBox1.Items.Add("По поставщику");
             comboBox1.Items.Add("По цене");
             comboBox1.Items.Add("По отатку на складе");
-            query = "SELECT p.product_id, p.product_name AS 'Наименование товара', c.category_name AS 'Категория', s.supplier_name AS 'Поставщик', p.price AS 'Цена', p.stock AS 'Остаток на складе' FROM products p JOIN categories c ON p.category_id = c.category_id JOIN suppliers s ON p.supplier_id = s.supplier_id";
+            query = viewproductsquery;
             table = "products";
             id_string = "product_id";
 
@@ -326,7 +335,7 @@ namespace curse
             comboBox1.Items.Clear();
             comboBox1.Items.Add("По логину");
             comboBox1.Items.Add("По роли");
-            query = "SELECT user_id, username as 'Логин', email as 'Почта', password as 'Пароль', r.role_name as 'Роль' FROM users u JOIN roles r ON u.role = r.id";
+            query = viewusersquery;
             table = "users";
             id_string = "user_id";
 
@@ -513,8 +522,6 @@ namespace curse
 
         private void button12_Click(object sender, EventArgs e)
         {
-            if (dataGridView1.EditMode == DataGridViewEditMode.EditProgrammatically)
-            {
                 switch (table)
                 {
                     case "sales":
@@ -558,31 +565,7 @@ namespace curse
                             this.AdminForm_Load(sender, e);
                         }
                         break;
-
                 }
-            }
-            else if (dataGridView1.EditMode == DataGridViewEditMode.EditOnKeystroke) {
-                foreach (DataGridViewRow row in dataGridView1.Rows)
-                {
-                    switch (table)
-                    {
-                        case "suppliers":
-                            query = $"UPDATE `officesupplies`.`suppliers` SET `supplier_name` = '{row.Cells[1].Value}', `contact_email` = '{row.Cells[2].Value}', `phone` = '{row.Cells[3].Value}' WHERE (`supplier_id` = '{row.Cells[0].Value}');";
-                            break;
-                        case "products":
-
-                            break;
-                        case "categories":
-
-                            break;
-                        case "users":
-
-                            break;
-
-                    }
-                }
-                dataGridView1.EditMode = DataGridViewEditMode.EditProgrammatically;
-            }
         }
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)

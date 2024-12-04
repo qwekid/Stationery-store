@@ -16,6 +16,8 @@ namespace curse
     {
         private static string query = string.Empty;
 
+        private static bool isRedact;
+
         public CreateProduct()
         {
             InitializeComponent();
@@ -39,9 +41,10 @@ namespace curse
                 comboBox2.Items.Add(dt.Rows[i].ItemArray.GetValue(0).ToString());
             }
 
+            isRedact = false;
         }
 
-        public CreateProduct(string name, int category, int suplier, int price, int quantity) :this()
+        public CreateProduct(int id,string name, int category, int suplier, int price, int quantity) :this()
         {
             
             DataTable dt = new DataTable();
@@ -68,6 +71,9 @@ namespace curse
             comboBox2.SelectedIndex = suplier;
             textBox2.Text = price.ToString();
             textBox3.Text = quantity.ToString();
+
+            button1.Text = "Внести изменения";
+            isRedact = true;
         }
 
 
@@ -85,32 +91,62 @@ namespace curse
         private void button1_Click(object sender, EventArgs e)
         {
 
+            if (!isRedact) {
+                if (textBox1.Text != "" && textBox2.Text != "" && textBox3.Text != "" && comboBox1.SelectedIndex != -1 && comboBox2.SelectedIndex != -1)
+                {
+                    DataTable dt = new DataTable();
+                    string pn = textBox1.Text;
+                    string c_name = comboBox1.SelectedItem.ToString();
+                    query = $"select category_id from categories where category_name = '{c_name}'";
+                    dbhelper.LoadDataToDt(dt, query);
+                    int c_id = Convert.ToInt32(dt.Rows[0].ItemArray[0]);
+                    int s_id = Convert.ToInt32(comboBox2.SelectedIndex + 1);
+                    double p = 0;
+                    if (Double.TryParse(textBox2.Text.Replace('.', ','), out p)) { }
+                    else { MessageBox.Show("Некоректно указана цена"); textBox2.Clear(); }
+                    int s = Convert.ToInt32(textBox3.Text);
+                    query = $"INSERT INTO `officesupplies`.`products` (`product_name`, `category_id`, `supplier_id`, `price`, `stock`) VALUES ( '{pn}', {c_id}, {s_id}, {Convert.ToString(p).Replace(',', '.')}, {s} )";
+                    dbhelper.InsertDataOnDb(query);
 
-            if (textBox1.Text != "" && textBox2.Text != "" && textBox3.Text != "" && comboBox1.SelectedIndex != -1 && comboBox2.SelectedIndex != -1)
-            {
-                DataTable dt = new DataTable();
-                string pn = textBox1.Text;
-                string c_name = comboBox1.SelectedItem.ToString();
-                query = $"select category_id from categories where category_name = '{c_name}'";
-                dbhelper.LoadDataToDt(dt, query);
-                int c_id = Convert.ToInt32(dt.Rows[0].ItemArray[0]);
-                int s_id = Convert.ToInt32(comboBox2.SelectedIndex + 1);
-                double p = 0;
-                if (Double.TryParse(textBox2.Text.Replace('.', ','), out p)) { }
-                else { MessageBox.Show("Некоректно указана цена"); textBox2.Clear(); }
-                int s = Convert.ToInt32(textBox3.Text);
-                query = $"INSERT INTO `officesupplies`.`products` (`product_name`, `category_id`, `supplier_id`, `price`, `stock`) VALUES ( '{pn}', {c_id}, {s_id}, {Convert.ToString(p).Replace(',', '.')}, {s} )";
-                dbhelper.InsertDataOnDb(query);
-
-                textBox1.Clear();
-                textBox2.Clear();
-                textBox3.Clear();
-                comboBox1.SelectedIndex = -1;
-                comboBox2.SelectedIndex = -1;
+                    textBox1.Clear();
+                    textBox2.Clear();
+                    textBox3.Clear();
+                    comboBox1.SelectedIndex = -1;
+                    comboBox2.SelectedIndex = -1;
+                }
+                else
+                {
+                    MessageBox.Show("Заполните все данные о продукте");
+                }
             }
-            else
-            {
-                MessageBox.Show("Заполните все данные о продукте");
+            else {
+                if (textBox1.Text != "" && textBox2.Text != "" && textBox3.Text != "" && comboBox1.SelectedIndex != -1 && comboBox2.SelectedIndex != -1)
+                {
+                    DataTable dt = new DataTable();
+                    string pn = textBox1.Text;
+                    string c_name = comboBox1.SelectedItem.ToString();
+                    query = $"select category_id from categories where category_name = '{c_name}'";
+                    dbhelper.LoadDataToDt(dt, query);
+                    int c_id = Convert.ToInt32(dt.Rows[0].ItemArray[0]);
+                    int s_id = Convert.ToInt32(comboBox2.SelectedIndex + 1);
+                    double p = 0;
+                    if (Double.TryParse(textBox2.Text.Replace('.', ','), out p)) { }
+                    else { MessageBox.Show("Некоректно указана цена"); textBox2.Clear(); }
+                    int s = Convert.ToInt32(textBox3.Text);
+                    query = $"INSERT INTO `officesupplies`.`products` (`product_name`, `category_id`, `supplier_id`, `price`, `stock`) VALUES ( '{pn}', {c_id}, {s_id}, {Convert.ToString(p).Replace(',', '.')}, {s} )";
+                    //UPDATE `officesupplies`.`products` SET `product_id` = '2', `product_name` = 'q', `category_id` = 'w', `supplier_id` = 'e', `price` = '11', `stock` = '22' WHERE(`product_id` = '1');
+                    dbhelper.InsertDataOnDb(query);
+
+                    textBox1.Clear();
+                    textBox2.Clear();
+                    textBox3.Clear();
+                    comboBox1.SelectedIndex = -1;
+                    comboBox2.SelectedIndex = -1;
+                }
+                else
+                {
+                    MessageBox.Show("Заполните все данные о продукте");
+                }
             }
 
         }
