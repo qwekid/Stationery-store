@@ -17,7 +17,7 @@ namespace curse
         private static string query = string.Empty;
 
         private static bool isRedact;
-
+        private static int Id;
         public CreateProduct()
         {
             InitializeComponent();
@@ -46,7 +46,7 @@ namespace curse
 
         public CreateProduct(int id,string name, int category, int suplier, int price, int quantity) :this()
         {
-            
+            Id = id;
             DataTable dt = new DataTable();
 
             comboBox1.Items.Clear();
@@ -133,8 +133,8 @@ namespace curse
                     if (Double.TryParse(textBox2.Text.Replace('.', ','), out p)) { }
                     else { MessageBox.Show("Некоректно указана цена"); textBox2.Clear(); }
                     int s = Convert.ToInt32(textBox3.Text);
-                    query = $"INSERT INTO `officesupplies`.`products` (`product_name`, `category_id`, `supplier_id`, `price`, `stock`) VALUES ( '{pn}', {c_id}, {s_id}, {Convert.ToString(p).Replace(',', '.')}, {s} )";
-                    //UPDATE `officesupplies`.`products` SET `product_id` = '2', `product_name` = 'q', `category_id` = 'w', `supplier_id` = 'e', `price` = '11', `stock` = '22' WHERE(`product_id` = '1');
+                    query = $"UPDATE `officesupplies`.`products` SET  `product_name` = '{pn}', `category_id` = {c_id}, `supplier_id` = {s_id}, `price` = {Convert.ToString(p).Replace(',', '.')}, `stock` = {s} WHERE(`product_id` = {Id}); )";
+
                     dbhelper.InsertDataOnDb(query);
 
                     textBox1.Clear();
@@ -147,6 +147,8 @@ namespace curse
                 {
                     MessageBox.Show("Заполните все данные о продукте");
                 }
+
+
             }
 
         }

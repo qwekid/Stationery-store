@@ -7,9 +7,11 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Reflection.Emit;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace curse
@@ -224,7 +226,13 @@ namespace curse
                         int price = Convert.ToInt32(dataGridView1.CurrentRow.Cells[4].Value);
                         int quantity = Convert.ToInt32(dataGridView1.CurrentRow.Cells[5].Value);
                         CreateProduct p = new CreateProduct(Convert.ToInt32(dataGridView1.CurrentRow.Cells[0].Value), dataGridView1.CurrentRow.Cells[1].Value.ToString(), category, suplier, price, quantity);
-                        p.ShowDialog();
+
+                        if (p.ShowDialog() == DialogResult.OK)
+                        {
+                            // Обновляем данные на первой форме
+                            this.AdminForm_Load(sender, e);
+                        }
+                        
                     }
                     break;
                 case ("categories"):
@@ -233,14 +241,25 @@ namespace curse
                         int id = Convert.ToInt32(dataGridView1.CurrentRow.Cells[0].Value);
                         string name = dataGridView1.CurrentRow.Cells[1].Value.ToString();
                         string desc = dataGridView1.CurrentRow.Cells[2].Value.ToString();
-                        CreateCategory p = new CreateCategory(id,name, desc);
-                        p.ShowDialog();
+                        CreateCategory c = new CreateCategory(id,name, desc);
+
+                        if (c.ShowDialog() == DialogResult.OK)
+                        {
+                            // Обновляем данные на первой форме
+                            this.AdminForm_Load(sender, e);
+                        }
                     }
                     break;
                 case ("users"):
                     if (MessageBox.Show("Вы уверены, что хотите редактировать этот элемент?", "Подтверждение редактирования", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                     {
-                        MessageBox.Show("фцвфцв");
+                        int id = Convert.ToInt32(dataGridView1.CurrentRow.Cells[0].Value);
+                        CreateUser u = new CreateUser(id);
+                        if (u.ShowDialog() == DialogResult.OK)
+                        {
+                            // Обновляем данные на первой форме
+                            this.AdminForm_Load(sender, e);
+                        }
                     }
                     break;
                 case ("suppliers"):
