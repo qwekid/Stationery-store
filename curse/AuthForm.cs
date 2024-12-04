@@ -17,7 +17,6 @@ namespace curse
         private static int counter = 0;
 
         private static string currentcapcha = String.Empty;
-        Bitmap capchaImg = null;
 
         PictureBox PB = new PictureBox { Top = 10, Left = 230 };
         TextBox capchaTextBox = new TextBox { Left = 230, Top = 95 };
@@ -34,7 +33,7 @@ namespace curse
 
             string login = textBox1.Text;
             string password = textBox2.Text;
-            if (counter < 0)
+            if (counter == 0)
             {
                 if (login == LocalAdminAccount.Username && password == LocalAdminAccount.Password)
                 {
@@ -69,7 +68,7 @@ namespace curse
                     }
                 }
             }
-            else {
+            if(counter>0){
                 this.Width = 400;
 
                 textBox1.Enabled = false;
@@ -139,6 +138,7 @@ namespace curse
             currentcapcha = Capcha.GenerateCaptcha();
             Bitmap capchaImg = Capcha.DrawCaptcha(currentcapcha);
             PB.Image = capchaImg;
+            capchaTextBox.Clear();
         }
     }
 }
