@@ -42,6 +42,7 @@ namespace curse
             }
 
             isRedact = false;
+            this.ControlBox = false;
         }
 
         public CreateProduct(int id,string name, int category, int suplier, int price, int quantity) :this()
@@ -133,7 +134,7 @@ namespace curse
                     if (Double.TryParse(textBox2.Text.Replace('.', ','), out p)) { }
                     else { MessageBox.Show("Некоректно указана цена"); textBox2.Clear(); }
                     int s = Convert.ToInt32(textBox3.Text);
-                    query = $"UPDATE `officesupplies`.`products` SET  `product_name` = '{pn}', `category_id` = {c_id}, `supplier_id` = {s_id}, `price` = {Convert.ToString(p).Replace(',', '.')}, `stock` = {s} WHERE(`product_id` = {Id}); )";
+                    query = $"UPDATE `officesupplies`.`products` SET  `product_name` = '{pn}', `category_id` = {c_id}, `supplier_id` = {s_id}, `price` = {Convert.ToString(p).Replace(',', '.')}, `stock` = {s} WHERE(`product_id` = {Id});";
 
                     dbhelper.InsertDataOnDb(query);
 

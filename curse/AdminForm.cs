@@ -102,7 +102,7 @@ namespace curse
 
                     query = $"select product_name from `check` c join products p on c.products_product_id = p.product_id where product_name = '{dataGridView1.Rows[currendrowid].Cells[0].Value}'";
                     dbhelper.LoadDataToDt(dt, query);
-                    if (dt.Rows.Count > 0)
+                    if (dt.Rows.Count != 0)
                     {
                         return;
                     }
@@ -265,7 +265,13 @@ namespace curse
                 case ("suppliers"):
                     if (MessageBox.Show("Вы уверены, что хотите редактировать этот элемент?", "Подтверждение редактирования", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                     {
-                        MessageBox.Show("фцвфцв");
+                        int id = Convert.ToInt32(dataGridView1.CurrentRow.Cells[0].Value);
+                        CreateSuppliers s = new CreateSuppliers(id);
+                        if (s.ShowDialog() == DialogResult.OK)
+                        {
+                            // Обновляем данные на первой форме
+                            this.AdminForm_Load(sender, e);
+                        }
                     }
                     break;
             }
@@ -305,8 +311,8 @@ namespace curse
             string txt = textBox1.Text;
             if (table == "products") { query = viewproductsquery + $" WHERE p.product_name LIKE '%{txt}%' OR s.supplier_name LIKE '%{txt}%' OR p.price LIKE '%{txt}%' OR p.stock LIKE '%{txt}%';"; }
             else if (table == "categories") { query = viewcategoriesquery + $" WHERE category_name LIKE '%{txt}%'"; }
-            else if (table == "sales") { query = $" SELECT u.username AS 'Продавец',GROUP_CONCAT(CONCAT(p.product_name, ': ', c.quantity, ' шт.') SEPARATOR '; ') AS 'Товары',s.sale_date AS 'Дата продажи',s.total_amount AS 'Финальная стоимость' FROM sales s JOIN users u ON s.user_id = u.user_id JOIN `check` c ON s.check_check_id = c.sales_sale_id JOIN products p ON c.products_product_id = p.product_id WHERE u.username LIKE '%{txt}%' OR p.product_name LIKE '%{txt}%' OR c.quantity LIKE '%{txt}%' OR s.sale_date LIKE '%{txt}%' OR s.total_amount LIKE '%{txt}%' GROUP BY s.sale_id, u.username, u.email, s.sale_date, s.total_amount;"; }
-            else if (table == "users") { query = viewusersquery+ $" Where username Like '%{txt}%'"; ; }
+            else if (table == "sales") { query = $" SELECT \r\n    u.username AS 'Продавец', \r\n    GROUP_CONCAT(CONCAT(p.product_name, ': ', c.quantity, ' шт.') SEPARATOR '; ') AS 'Товары', \r\n    s.sale_date AS 'Дата продажи', \r\n    s.total_amount AS 'Финальная стоимость' \r\nFROM \r\n    `check` c \r\nJOIN \r\n    sales s ON c.sales_sale_id = s.sale_id \r\nJOIN \r\n    products p ON c.products_product_id = p.product_id \r\nJOIN \r\n    users u ON s.user_id = u.user_id \r\nWHERE \r\n    u.username LIKE '%{{txt}}%' \r\n    OR p.product_name LIKE '%{{txt}}%' \r\n    OR c.quantity LIKE '%{{txt}}%' \r\n    OR s.sale_date LIKE '%{{txt}}%' \r\n    OR s.total_amount LIKE '%{{txt}}%' \r\nGROUP BY \r\n    s.sale_id, \r\n    u.username, \r\n    s.sale_date, \r\n    s.total_amount;\r\n"; }
+            else if (table == "users") { query = viewusersquery+ $" Where username Like '%{txt}%'";}
             else if (table == "suppliers") { query = $"SELECT supplier_name as 'Наименование компании', contact_email as 'Электронная почта', phone as 'Контактный телефон' FROM suppliers Where supplier_name Like '%{txt}%' OR contact_email Like '%{txt}%' OR phone Like '%{txt}%'"; }
            
 

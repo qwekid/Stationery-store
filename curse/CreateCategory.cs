@@ -43,6 +43,9 @@ namespace curse
                     dbhelper.InsertDataOnDb(query);
 
                     MessageBox.Show("Категория успешно добавлена");
+
+                    textBox1.Clear();
+                    textBox2.Clear();
                 }
                 else
                 {
@@ -59,6 +62,8 @@ namespace curse
                     dbhelper.InsertDataOnDb(query);
 
                     MessageBox.Show("Категория успешно отредактирована");
+                    textBox1.Clear();
+                    textBox2.Clear();
                 }
                 else
                 {
