@@ -26,6 +26,8 @@ namespace curse
         private static readonly string viewproductsquery = "SELECT p.product_id, p.product_name AS 'Наименование товара', c.category_name AS 'Категория', s.supplier_name AS 'Поставщик', p.price AS 'Цена', p.stock AS 'Остаток на складе' FROM products p JOIN categories c ON p.category_id = c.category_id JOIN suppliers s ON p.supplier_id = s.supplier_id";
         private static readonly string viewcategoriesquery = "SELECT category_id,  category_name as 'Наименование категории', description as 'Описание категории' FROM categories";
         private static readonly string viewusersquery ="SELECT user_id, username as 'Логин', email as 'Почта', password as 'Пароль', r.role_name as 'Роль' FROM users u JOIN roles r ON u.role = r.id";
+        private static readonly string viewsalesquery = "SELECT \r\n    u.username AS \"Продавец\", \r\n    GROUP_CONCAT(CONCAT(p.product_name, ': ', c.quantity, ' шт.') SEPARATOR '; ') AS \"Товары\", \r\n    s.sale_date AS \"Дата продажи\", \r\n    s.total_amount AS \"Финальная стоимость\" \r\nFROM \r\n    `check` c \r\nJOIN \r\n    sales s ON c.sales_sale_id = s.sale_id \r\nJOIN  \r\n    products p ON c.products_product_id = p.product_id \r\nJOIN \r\n    users u ON s.user_id = u.user_id ";
+        private static readonly string viewsalesqueryend = "GROUP BY \r\n s.sale_id, u.username, s.sale_date, s.total_amount";
         private ContextMenuStrip contextMenuStrip;
         public AdminForm()
         {
@@ -53,7 +55,7 @@ namespace curse
             comboBox1.Items.Add("По продавцу");
             comboBox1.Items.Add("По сумме");
             comboBox1.Items.Add("По дате");
-            query = "SELECT \r\n    u.username AS 'Продавец',\r\n    GROUP_CONCAT(CONCAT(p.product_name, ': ', c.quantity, ' шт.') SEPARATOR '; ') AS 'Товары',\r\n    s.sale_date AS 'Дата продажи',\r\n    s.total_amount AS 'Финальная стоимость' \r\nFROM \r\n    `check` c \r\n \r\nJOIN \r\n    sales s ON c.sales_sale_id = s.sale_id\r\nJOIN \r\n    products p ON c.products_product_id = p.product_id \r\nJOIN \r\n    users u ON s.user_id = u.user_id\r\nGROUP BY \r\n    s.sale_id, u.username, s.sale_date, s.total_amount\r\n";
+            query = viewsalesquery+ viewsalesqueryend;
             table = "sales";
             id_string = "sale_id";
             dbhelper.LoadDataToDGV(dataGridView1, query);
@@ -293,7 +295,7 @@ namespace curse
                 dbhelper.InsertDataOnDb(query);
                 if (table == "products") { query = viewproductsquery;}
                 else if (table == "categories") { query = viewcategoriesquery; }
-                else if (table == "sales") { query = $" SELECT u.username AS 'Продавец',GROUP_CONCAT(CONCAT(p.product_name, ': ', c.quantity, ' шт.') SEPARATOR '; ') AS 'Товары',s.sale_date AS 'Дата продажи',s.total_amount AS 'Финальная стоимость' FROM sales s JOIN users u ON s.user_id = u.user_id JOIN `check` c ON s.check_check_id = c.sales_sale_id JOIN products p ON c.products_product_id = p.product_id;"; }
+                else if (table == "sales") { query = viewsalesquery; }
                 else if (table == "users") { query = viewusersquery; }
                 else if (table == "suppliers") { query = $"SELECT supplier_name as 'Наименование компании', contact_email as 'Электронная почта', phone as 'Контактный телефон' FROM suppliers"; }
                 dbhelper.LoadDataToDGV(dataGridView1, query);
@@ -311,7 +313,7 @@ namespace curse
             string txt = textBox1.Text;
             if (table == "products") { query = viewproductsquery + $" WHERE p.product_name LIKE '%{txt}%' OR s.supplier_name LIKE '%{txt}%' OR p.price LIKE '%{txt}%' OR p.stock LIKE '%{txt}%';"; }
             else if (table == "categories") { query = viewcategoriesquery + $" WHERE category_name LIKE '%{txt}%'"; }
-            else if (table == "sales") { query = $" SELECT \r\n    u.username AS 'Продавец', \r\n    GROUP_CONCAT(CONCAT(p.product_name, ': ', c.quantity, ' шт.') SEPARATOR '; ') AS 'Товары', \r\n    s.sale_date AS 'Дата продажи', \r\n    s.total_amount AS 'Финальная стоимость' \r\nFROM \r\n    `check` c \r\nJOIN \r\n    sales s ON c.sales_sale_id = s.sale_id \r\nJOIN \r\n    products p ON c.products_product_id = p.product_id \r\nJOIN \r\n    users u ON s.user_id = u.user_id \r\nWHERE \r\n    u.username LIKE '%{{txt}}%' \r\n    OR p.product_name LIKE '%{{txt}}%' \r\n    OR c.quantity LIKE '%{{txt}}%' \r\n    OR s.sale_date LIKE '%{{txt}}%' \r\n    OR s.total_amount LIKE '%{{txt}}%' \r\nGROUP BY \r\n    s.sale_id, \r\n    u.username, \r\n    s.sale_date, \r\n    s.total_amount;\r\n"; }
+            else if (table == "sales") { query = viewsalesquery + $" WHERE \r\n    u.username LIKE '%{txt}%' \r\n    OR p.product_name LIKE '%{txt}%' \r\n    OR c.quantity LIKE '%{txt}%' \r\n    OR s.sale_date LIKE '%{txt}%' \r\n    OR s.total_amount LIKE '%{txt}%'" + viewsalesqueryend; }
             else if (table == "users") { query = viewusersquery+ $" Where username Like '%{txt}%'";}
             else if (table == "suppliers") { query = $"SELECT supplier_name as 'Наименование компании', contact_email as 'Электронная почта', phone as 'Контактный телефон' FROM suppliers Where supplier_name Like '%{txt}%' OR contact_email Like '%{txt}%' OR phone Like '%{txt}%'"; }
            
@@ -556,7 +558,6 @@ namespace curse
                         CreateProduct products = new CreateProduct();
                         if (products.ShowDialog() == DialogResult.OK)
                         {
-                            // Обновляем данные на первой форме
                             this.AdminForm_Load(sender, e);
                         }
                         break;
@@ -564,7 +565,6 @@ namespace curse
                         CreateCategory c = new CreateCategory();
                         if (c.ShowDialog() == DialogResult.OK)
                         {
-                            // Обновляем данные на первой форме
                             this.AdminForm_Load(sender, e);
                         }
                         break;
@@ -572,7 +572,6 @@ namespace curse
                         CreateUser users = new CreateUser();
                         if (users.ShowDialog() == DialogResult.OK)
                         {
-                            // Обновляем данные на первой форме
                             this.AdminForm_Load(sender, e);
                         }
                         break;
@@ -580,7 +579,6 @@ namespace curse
                         CreateSuppliers sup = new CreateSuppliers();
                         if (sup.ShowDialog() == DialogResult.OK)
                         {
-                            // Обновляем данные на первой форме
                             this.AdminForm_Load(sender, e);
                         }
                         break;
