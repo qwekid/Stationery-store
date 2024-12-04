@@ -13,6 +13,7 @@ namespace curse
 {
     public partial class AuthForm : Form
     {
+        private static int counter = 0;
         public AuthForm()
         {
             InitializeComponent();
@@ -20,39 +21,60 @@ namespace curse
 
         private void button1_Click(object sender, EventArgs e)
         {
+
             string login = textBox1.Text;
             string password = textBox2.Text;
-
-            if (login == LocalAdminAccount.Username && password ==LocalAdminAccount.Password)
+            if (counter < 1)
             {
-                LocalAdminForm laf = new LocalAdminForm();
-                if (laf.ShowDialog() == DialogResult.OK)
+                if (login == LocalAdminAccount.Username && password == LocalAdminAccount.Password)
                 {
-                    textBox1.Clear();
-                    textBox2.Clear();
-                    this.AuthForm_Load(sender, e);
-                }
-                return;
-            }
-            else
-            {
-                int role = dbhelper.CheckUserRole(login, password);
-                if (role == 2)
-                {
-                    AdminForm a = new AdminForm();
-                    a.Show();
-                    this.Hide();
-                }
-                else if (role == 1)
-                {
-                    ManagerForm a = new ManagerForm();
-                    a.Show();
-                    this.Hide();
+                    LocalAdminForm laf = new LocalAdminForm();
+                    if (laf.ShowDialog() == DialogResult.OK)
+                    {
+                        textBox1.Clear();
+                        textBox2.Clear();
+                        this.AuthForm_Load(sender, e);
+                    }
+                    return;
                 }
                 else
                 {
-                    MessageBox.Show("Неверный логин или пароль!");
+                    int role = dbhelper.CheckUserRole(login, password);
+                    if (role == 2)
+                    {
+                        AdminForm a = new AdminForm();
+                        a.Show();
+                        this.Hide();
+                    }
+                    else if (role == 1)
+                    {
+                        ManagerForm a = new ManagerForm();
+                        a.Show();
+                        this.Hide();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Неверный логин или пароль!");
+                        counter++;
+                    }
                 }
+            }
+            else {
+                this.Width = 400;
+
+                string capcha = Capcha.GenerateCaptcha();
+                Bitmap capchaImg = Capcha.DrawCaptcha(capcha);
+
+                PictureBox PB = new PictureBox { Top = 10, Left = 230 };
+                PB.Image = capchaImg;
+
+                TextBox capchaTextBox = new TextBox { Left = 230, Top = 95 };
+                capchaTextBox.Font = new Font(label1.Font.Name, 14.25F);
+
+
+
+                this.Controls.Add(capchaTextBox);
+                this.Controls.Add(PB);
             }
         }
 
@@ -64,7 +86,7 @@ namespace curse
 
         private void AuthForm_Load(object sender, EventArgs e)
         {
-
+            counter = 0;
         }
     }
 }

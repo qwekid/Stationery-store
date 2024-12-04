@@ -63,6 +63,7 @@
     <Compile Include="AuthForm.Designer.cs">
       <DependentUpon>AuthForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Capcha.cs" />
     <Compile Include="CreateCategory.cs">
       <SubType>Form</SubType>
     </Compile>
