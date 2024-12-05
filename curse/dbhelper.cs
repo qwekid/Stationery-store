@@ -15,28 +15,40 @@ namespace curse
 {
     public class dbhelper
     {
-        public static int maxTC = 0;
+        public static int maxStrings;
         private static string connectionString = "server=localhost;user=root;database=officesupplies;password=root;";
-        static public void LoadDataToDGV(DataGridView dataGridView, string query)
+        static public void LoadDataToDGV(DataGridView dataGridView, string query, int pageNumber, int pageSize, string table)
         {
+
+            // Рассчитываем смещение (offset) для запроса
+            int offset = (pageNumber - 1) * pageSize;
+
+            // Добавляем пагинацию в запрос SQL
+            string paginatedQuery = $"{query} LIMIT {pageSize} OFFSET {offset}";
+
             using (MySqlConnection con = new MySqlConnection())
             {
                 con.ConnectionString = connectionString;
                 con.Open();
 
-                MySqlCommand cmd = new MySqlCommand(query, con);
-                cmd.ExecuteNonQuery();
+                MySqlCommand cmd = new MySqlCommand(paginatedQuery, con);
 
                 MySqlDataAdapter da = new MySqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
 
                 da.Fill(dt);
                 dataGridView.DataSource = dt;
+
+                cmd = new MySqlCommand($"select count(*) from {table}", con);
+                dt = new DataTable();
+                da = new MySqlDataAdapter(cmd);
+
+                da.Fill(dt);
+
+                maxStrings =Convert.ToInt32(Math.Ceiling((double)Convert.ToInt32(dt.Rows[0].ItemArray[0]) / pageSize));
                 con.Close();
             }
         }
-
-        
 
         static public int CheckUserRole(string login, string password)
         {
@@ -75,8 +87,6 @@ namespace curse
             }
             catch(IndexOutOfRangeException) { return 0; }
         }
-
-        
 
         static public void LoadDataToDt(DataTable dt, string query)
         {
