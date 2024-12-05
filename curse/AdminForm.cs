@@ -24,6 +24,8 @@ namespace curse
         private static int maxPages;
         private static int maxStrings;
 
+        private static int[] ButtonIndexes = new int[0];
+
         private ContextMenuStrip contextMenuStrip;
         public AdminForm()
         {
@@ -50,6 +52,7 @@ namespace curse
             for (int i = 1; i <= maxPages; i++)
             {
                 AddButton($"{i}");
+                ButtonIndexes.Append(i);
             }
 
         }
@@ -74,6 +77,7 @@ namespace curse
             for (int i = 1; i <= maxPages; i++)
             {
                 AddButton($"{i}");
+                ButtonIndexes.Append(i);
             }
 
         }
@@ -103,10 +107,11 @@ namespace curse
             label2.Text = maxStrings.ToString();
 
 
-            // Пример добавления кнопок при загрузке формы
+            //добавление кнопок на форму
             for (int i = 1; i <= maxPages; i++)
             {
                 AddButton($"{i}");
+                ButtonIndexes.Append(i);
             }
 
             
@@ -311,9 +316,16 @@ namespace curse
             else if (table == "suppliers") { query = $"SELECT supplier_name as 'Наименование компании', contact_email as 'Электронная почта', phone as 'Контактный телефон' FROM suppliers Where supplier_name Like '%{txt}%' OR contact_email Like '%{txt}%' OR phone Like '%{txt}%'"; }
 
             pageNumber = 1;
-            dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize, table);
+            dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize, $"({query})AS subquerys");
             maxPages = dbhelper.maxPages;
             maxStrings = dbhelper.maxstrings;
+
+            flowLayoutPanel1.Controls.Clear();
+            for (int i = 1; i <= maxPages; i++)
+            {
+                AddButton($"{i}");
+                ButtonIndexes.Append(i);
+            }
         }
 
         private void button7_Click(object sender, EventArgs e)
@@ -350,6 +362,7 @@ namespace curse
             for (int i = 1; i <= maxPages; i++)
             {
                 AddButton($"{i}");
+                ButtonIndexes.Append(i);
             }
         }
 
@@ -374,6 +387,7 @@ namespace curse
             for (int i = 1; i <= maxPages; i++)
             {
                 AddButton($"{i}");
+                ButtonIndexes.Append(i);
             }
         }
 
@@ -400,6 +414,7 @@ namespace curse
             for (int i = 1; i <= maxPages; i++)
             {
                 AddButton($"{i}");
+                ButtonIndexes.Append(i);
             }
         }
 
@@ -638,7 +653,7 @@ namespace curse
             newButton.Text = buttonText;
             newButton.AutoSize = true; // Устанавливаем AutoSize для автоматического изменения размера
             newButton.Click += NewButton_Click; // Подписываемся на событие Click
-
+            
             // Добавляем кнопку в FlowLayoutPanel
             flowLayoutPanel1.Controls.Add(newButton);
 
@@ -653,7 +668,11 @@ namespace curse
 
         private void NewButton_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Button clicked!");
+            Button clickedButton = sender as Button;
+            pageNumber = Convert.ToInt32(clickedButton.Text);
+            dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize, table);
+            maxPages = dbhelper.maxPages;
+            maxStrings = dbhelper.maxstrings;
         }
     }
 }
