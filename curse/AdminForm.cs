@@ -33,6 +33,7 @@ namespace curse
 
         private void button2_Click(object sender, EventArgs e)
         {
+            flowLayoutPanel1.Controls.Clear();
             comboBox1.Items.Clear();
             comboBox1.Items.Add("По наименованию");
             query = "SELECT category_name as 'Наименование категории', description as 'Описание категории' FROM categories";
@@ -45,11 +46,17 @@ namespace curse
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells;
             label2.Text = maxStrings.ToString();
             textBox1.Text = "";
-            
+
+            for (int i = 1; i <= maxPages; i++)
+            {
+                AddButton($"{i}");
+            }
+
         }
 
         private void button6_Click(object sender, EventArgs e)
         {
+            flowLayoutPanel1.Controls.Clear();
             comboBox1.Items.Clear();
             comboBox1.Items.Add("По продавцу");
             comboBox1.Items.Add("По сумме");
@@ -63,7 +70,12 @@ namespace curse
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells;
             label2.Text = maxStrings.ToString();
             textBox1.Text = "";
-            
+
+            for (int i = 1; i <= maxPages; i++)
+            {
+                AddButton($"{i}");
+            }
+
         }
 
         private void button9_Click(object sender, EventArgs e)
@@ -89,6 +101,15 @@ namespace curse
             maxStrings = dbhelper.maxstrings;
             contextMenuStrip = new ContextMenuStrip();
             label2.Text = maxStrings.ToString();
+
+
+            // Пример добавления кнопок при загрузке формы
+            for (int i = 1; i <= maxPages; i++)
+            {
+                AddButton($"{i}");
+            }
+
+            
 
         }
 
@@ -307,6 +328,7 @@ namespace curse
 
         private void button1_Click(object sender, EventArgs e)
         {
+            flowLayoutPanel1.Controls.Clear();
             comboBox1.Items.Clear();
             comboBox1.Items.Add("По наименованию");
             comboBox1.Items.Add("по категории");
@@ -324,10 +346,16 @@ namespace curse
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells;
             label2.Text = maxStrings.ToString();
             textBox1.Text = "";
+
+            for (int i = 1; i <= maxPages; i++)
+            {
+                AddButton($"{i}");
+            }
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
+            flowLayoutPanel1.Controls.Clear();
             comboBox1.Items.Clear();
             comboBox1.Items.Add("По логину");
             comboBox1.Items.Add("По роли");
@@ -342,10 +370,16 @@ namespace curse
             maxStrings = dbhelper.maxstrings;
             textBox1.Text = "";
             label2.Text = maxStrings.ToString();
+
+            for (int i = 1; i <= maxPages; i++)
+            {
+                AddButton($"{i}");
+            }
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
+            flowLayoutPanel1.Controls.Clear();
             comboBox1.Items.Clear();
             comboBox1.Items.Add("По наименованию");
             comboBox1.Items.Add("По электоронной почте");
@@ -362,6 +396,11 @@ namespace curse
             textBox1.Text = "";
             dataGridView1.Columns[0].Visible = false;
             label2.Text = maxStrings.ToString();
+
+            for (int i = 1; i <= maxPages; i++)
+            {
+                AddButton($"{i}");
+            }
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -590,6 +629,31 @@ namespace curse
                 maxPages = dbhelper.maxPages;
                 maxStrings = dbhelper.maxstrings;
             }
+        }
+
+        private void AddButton(string buttonText)
+        {
+            // Создаем новую кнопку
+            Button newButton = new Button {Height=20, Width= 20 };
+            newButton.Text = buttonText;
+            newButton.AutoSize = true; // Устанавливаем AutoSize для автоматического изменения размера
+            newButton.Click += NewButton_Click; // Подписываемся на событие Click
+
+            // Добавляем кнопку в FlowLayoutPanel
+            flowLayoutPanel1.Controls.Add(newButton);
+
+            // Центрируем кнопку
+            CenterButton(newButton);
+        }
+        private void CenterButton(Button button)
+        {
+            // Центрируем кнопку в родительском контейнере
+            button.Left = (flowLayoutPanel1.ClientSize.Width - button.Width) / 2;
+        }
+
+        private void NewButton_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Button clicked!");
         }
     }
 }
