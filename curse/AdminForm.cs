@@ -106,6 +106,14 @@ namespace curse
             contextMenuStrip = new ContextMenuStrip();
             label2.Text = maxStrings.ToString();
 
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                if (Convert.ToInt32(row.Cells[4].Value) < 50)
+                {
+                    row.Cells[4].Style.BackColor = Color.Red;
+                    row.Cells[4].Style.ForeColor = Color.White;
+                }
+            }
 
             //добавление кнопок на форму
             for (int i = 1; i <= maxPages; i++)
@@ -358,6 +366,13 @@ namespace curse
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells;
             label2.Text = maxStrings.ToString();
             textBox1.Text = "";
+
+            foreach (DataGridViewRow row in dataGridView1.Rows) {
+                if (Convert.ToInt32(row.Cells[4].Value) < 50) {
+                    row.Cells[4].Style.BackColor = Color.Red;
+                    row.Cells[4].Style.ForeColor = Color.White;
+                }
+            }
 
             for (int i = 1; i <= maxPages; i++)
             {
