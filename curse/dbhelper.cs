@@ -15,7 +15,8 @@ namespace curse
 {
     public class dbhelper
     {
-        public static int maxStrings;
+        public static int maxPages;
+        public static int maxstrings;
         private static string connectionString = "server=localhost;user=root;database=officesupplies;password=root;";
         static public void LoadDataToDGV(DataGridView dataGridView, string query, int pageNumber, int pageSize, string table)
         {
@@ -45,7 +46,9 @@ namespace curse
 
                 da.Fill(dt);
 
-                maxStrings =Convert.ToInt32(Math.Ceiling((double)Convert.ToInt32(dt.Rows[0].ItemArray[0]) / pageSize));
+                maxstrings = Convert.ToInt32(dt.Rows[0].ItemArray[0]);
+
+                maxPages =Convert.ToInt32(Math.Ceiling((double)Convert.ToInt32(dt.Rows[0].ItemArray[0]) / pageSize));
                 con.Close();
             }
         }

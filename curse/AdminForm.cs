@@ -21,7 +21,8 @@ namespace curse
         private static string table = string.Empty;
         private static string id_string = string.Empty;
 
-        private static int maxstrings;
+        private static int maxPages;
+        private static int maxStrings;
 
         private ContextMenuStrip contextMenuStrip;
         public AdminForm()
@@ -39,10 +40,10 @@ namespace curse
             id_string = "category_name";
             pageNumber = 1;
             dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize, table);
-            maxstrings = dbhelper.maxStrings;
-
+            maxPages = dbhelper.maxPages;
+            maxStrings = dbhelper.maxstrings;
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells;
-
+            label2.Text = maxStrings.ToString();
             textBox1.Text = "";
             
         }
@@ -57,10 +58,10 @@ namespace curse
             table = "sales";
             pageNumber = 1;
             dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize, table);
-            maxstrings = dbhelper.maxStrings;
-
+            maxPages = dbhelper.maxPages;
+            maxStrings = dbhelper.maxstrings;
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells;
-
+            label2.Text = maxStrings.ToString();
             textBox1.Text = "";
             
         }
@@ -84,9 +85,10 @@ namespace curse
             id_string = "product_name";
             pageNumber = 1;
             dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize, table);
-            maxstrings = dbhelper.maxStrings;
-
+            maxPages = dbhelper.maxPages;
+            maxStrings = dbhelper.maxstrings;
             contextMenuStrip = new ContextMenuStrip();
+            label2.Text = maxStrings.ToString();
 
         }
 
@@ -268,7 +270,8 @@ namespace curse
                 else if (table == "suppliers") { query = $"SELECT supplier_name as 'Наименование компании', contact_email as 'Электронная почта', phone as 'Контактный телефон' FROM suppliers"; }
                 pageNumber = 1;
                 dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize, table);
-                maxstrings = dbhelper.maxStrings;
+                maxPages = dbhelper.maxPages;
+                maxStrings = dbhelper.maxstrings;
             }
 
         }
@@ -280,15 +283,16 @@ namespace curse
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
             string txt = textBox1.Text;
-            if (table == "products") { query = $"SELECT p.product_name AS \"Наименование товара\", c.category_name AS \"Категория\", s.supplier_name AS \"Поставщик\", p.price AS \"Цена\", p.stock AS \"Остаток на складе\" FROM products p JOIN categories c ON p.category_id = c.category_id JOIN suppliers s ON p.supplier_id = s.supplier_id WHERE p.product_name LIKE '%{txt}%' OR s.supplier_name LIKE '%{txt}%' OR p.price LIKE '%{txt}%' OR p.stock LIKE '%{txt}%';"; }
-            else if (table == "categories") { query = $"SELECT category_name as 'Наименование категории', description as 'Описание категории' FROM categories Where category_name Like '%{txt}%'"; }
-            else if (table == "sales") { query = $" SELECT u.username AS 'Продавец',GROUP_CONCAT(CONCAT(p.product_name, ': ', c.quantity, ' шт.') SEPARATOR '; ') AS 'Товары',s.sale_date AS 'Дата продажи',s.total_amount AS 'Финальная стоимость' FROM sales s JOIN users u ON s.user_id = u.user_id JOIN `check` c ON s.check_check_id = c.sales_sale_id JOIN products p ON c.products_product_id = p.product_id WHERE u.username LIKE '%{txt}%' OR p.product_name LIKE '%{txt}%' OR c.quantity LIKE '%{txt}%' OR s.sale_date LIKE '%{txt}%' OR s.total_amount LIKE '%{txt}%' GROUP BY s.sale_id, u.username, u.email, s.sale_date, s.total_amount;"; }
+            if (table == "products") { query = $"SELECT p.product_name AS \"Наименование товара\", c.category_name AS \"Категория\", s.supplier_name AS \"Поставщик\", p.price AS \"Цена\", p.stock AS \"Остаток на складе\" FROM products p JOIN categories c ON p.category_id = c.category_id JOIN suppliers s ON p.supplier_id = s.supplier_id WHERE p.product_name LIKE '%{txt}%' OR s.supplier_name LIKE '%{txt}%' OR p.price LIKE '%{txt}%' OR p.stock LIKE '%{txt}%' "; }
+            else if (table == "categories") { query = $"SELECT category_name as 'Наименование категории', description as 'Описание категории' FROM categories Where category_name Like '%{txt}%' "; }
+            else if (table == "sales") { query = $" SELECT u.username AS 'Продавец',GROUP_CONCAT(CONCAT(p.product_name, ': ', c.quantity, ' шт.') SEPARATOR '; ') AS 'Товары',s.sale_date AS 'Дата продажи',s.total_amount AS 'Финальная стоимость' FROM sales s JOIN users u ON s.user_id = u.user_id JOIN `check` c ON s.check_check_id = c.sales_sale_id JOIN products p ON c.products_product_id = p.product_id WHERE u.username LIKE '%{txt}%' OR p.product_name LIKE '%{txt}%' OR c.quantity LIKE '%{txt}%' OR s.sale_date LIKE '%{txt}%' OR s.total_amount LIKE '%{txt}%' GROUP BY s.sale_id, u.username, u.email, s.sale_date, s.total_amount "; }
             else if (table == "users") { query = $"SELECT username as 'Логин', email as 'Почта', password as 'Пароль', r.role_name as 'Роль' FROM users u JOIN roles r ON u.role = r.id Where username Like '%{txt}%'"; ; }
             else if (table == "suppliers") { query = $"SELECT supplier_name as 'Наименование компании', contact_email as 'Электронная почта', phone as 'Контактный телефон' FROM suppliers Where supplier_name Like '%{txt}%' OR contact_email Like '%{txt}%' OR phone Like '%{txt}%'"; }
 
             pageNumber = 1;
             dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize, table);
-            maxstrings = dbhelper.maxStrings;
+            maxPages = dbhelper.maxPages;
+            maxStrings = dbhelper.maxstrings;
         }
 
         private void button7_Click(object sender, EventArgs e)
@@ -314,10 +318,11 @@ namespace curse
             id_string = "product_name";
             pageNumber = 1;
             dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize, table);
-            maxstrings = dbhelper.maxStrings;
+            maxPages = dbhelper.maxPages;
+            maxStrings = dbhelper.maxstrings;
 
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells;
-
+            label2.Text = maxStrings.ToString();
             textBox1.Text = "";
         }
 
@@ -333,9 +338,10 @@ namespace curse
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             pageNumber = 1;
             dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize, table);
-            maxstrings = dbhelper.maxStrings;
+            maxPages = dbhelper.maxPages;
+            maxStrings = dbhelper.maxstrings;
             textBox1.Text = "";
-            
+            label2.Text = maxStrings.ToString();
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -351,9 +357,11 @@ namespace curse
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             pageNumber = 1;
             dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize, table);
-            maxstrings = dbhelper.maxStrings;
+            maxPages = dbhelper.maxPages;
+            maxStrings = dbhelper.maxstrings;
             textBox1.Text = "";
             dataGridView1.Columns[0].Visible = false;
+            label2.Text = maxStrings.ToString();
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -568,17 +576,19 @@ namespace curse
             {
                 pageNumber -= 1;
                 dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize, table);
-                maxstrings = dbhelper.maxStrings;
+                maxPages = dbhelper.maxPages;
+                maxStrings = dbhelper.maxstrings;
             }
         }
 
         private void button8_Click_1(object sender, EventArgs e)
         {
-            if (pageNumber < maxstrings)
+            if (pageNumber < maxPages)
             {
                 pageNumber += 1;
                 dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize, table);
-                maxstrings = dbhelper.maxStrings;
+                maxPages = dbhelper.maxPages;
+                maxStrings = dbhelper.maxstrings;
             }
         }
     }

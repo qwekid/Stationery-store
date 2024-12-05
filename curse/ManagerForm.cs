@@ -30,7 +30,7 @@ namespace curse
             pageNumber = 1;
             table = "products";
             dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize, table);
-            maxstrings = dbhelper.maxStrings;
+            maxstrings = dbhelper.maxPages;
         }
 
         private void ManagerForm_Load(object sender, EventArgs e)
@@ -39,21 +39,21 @@ namespace curse
             pageNumber = 1;
             table = "products";
             dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize, table);
-            maxstrings = dbhelper.maxStrings;
+            maxstrings = dbhelper.maxPages;
         }
 
         private void button7_Click(object sender, EventArgs e)
         {
             if (pageNumber > 0) { pageSize--; }
             dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize, table);
-            maxstrings = dbhelper.maxStrings;
+            maxstrings = dbhelper.maxPages;
         }
 
         private void button8_Click(object sender, EventArgs e)
         {
             //if (pageNumber < dbhelper.maxTC - 1) { pageNumber++; }
             dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize, table);
-            maxstrings = dbhelper.maxStrings;
+            maxstrings = dbhelper.maxPages;
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -62,7 +62,7 @@ namespace curse
             pageNumber = 0;
             table = "`check`";
             dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize, table);
-            maxstrings = dbhelper.maxStrings;
+            maxstrings = dbhelper.maxPages;
         }
 
         private void button4_Click(object sender, EventArgs e)
