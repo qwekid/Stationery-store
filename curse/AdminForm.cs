@@ -26,6 +26,8 @@ namespace curse
 
         private static int[] ButtonIndexes = new int[0];
 
+        private static bool showUser=false;
+
         private ContextMenuStrip contextMenuStrip;
         public AdminForm()
         {
@@ -35,6 +37,7 @@ namespace curse
 
         private void button2_Click(object sender, EventArgs e)
         {
+            checkBox1.Visible = false;
             flowLayoutPanel1.Controls.Clear();
             comboBox1.Items.Clear();
             comboBox1.Items.Add("По наименованию");
@@ -59,6 +62,7 @@ namespace curse
 
         private void button6_Click(object sender, EventArgs e)
         {
+            checkBox1.Visible = false;
             flowLayoutPanel1.Controls.Clear();
             comboBox1.Items.Clear();
             comboBox1.Items.Add("По продавцу");
@@ -90,6 +94,7 @@ namespace curse
 
         private void AdminForm_Load(object sender, EventArgs e)
         {
+            checkBox1.Visible = false;
             comboBox1.Items.Clear();
             comboBox1.Items.Add("По наименованию");
             comboBox1.Items.Add("по категории");
@@ -348,6 +353,7 @@ namespace curse
 
         private void button1_Click(object sender, EventArgs e)
         {
+            checkBox1.Visible = false;
             flowLayoutPanel1.Controls.Clear();
             comboBox1.Items.Clear();
             comboBox1.Items.Add("По наименованию");
@@ -383,6 +389,7 @@ namespace curse
 
         private void button5_Click(object sender, EventArgs e)
         {
+            checkBox1.Visible = true;
             flowLayoutPanel1.Controls.Clear();
             comboBox1.Items.Clear();
             comboBox1.Items.Add("По логину");
@@ -408,23 +415,35 @@ namespace curse
 
             //скрытие логина, пароля и роли пользователя (0,2,3 колонки)
             // Перебираем все строки в DataGridView
-            foreach (DataGridViewRow row in dataGridView1.Rows)
+
+            if (showUser) // Если CheckBox отмечен, показываем пароль
             {
-                // Проверяем, чтобы строка была не новой (не добавленной)
-                if (!row.IsNewRow)
+                dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize, table);
+            }
+            else // Если CheckBox не отмечен, скрываем пароль
+            {
+                foreach (DataGridViewRow row in dataGridView1.Rows)
                 {
-                    // Заменяем значение в заданном столбце на ***
-                    string a = row.Cells[0].Value.ToString();
-                    row.Cells[0].Value = a[0].ToString()+ a[1].ToString()+ "*****";
-                    row.Cells[2].Value = "*****";
-                    row.Cells[3].Value = "*****";
+                    // Проверяем, чтобы строка была не новой (не добавленной)
+                    if (!row.IsNewRow)
+                    {
+                        // Заменяем значение в заданном столбце на ***
+                        string a = row.Cells[0].Value.ToString();
+                        row.Cells[0].Value = a[0].ToString() + a[1].ToString() + "*****";
+                        row.Cells[2].Value = "*****";
+                        row.Cells[3].Value = "*****";
+                    }
                 }
             }
+           
+
+            
 
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
+            checkBox1.Visible = false;
             flowLayoutPanel1.Controls.Clear();
             comboBox1.Items.Clear();
             comboBox1.Items.Add("По наименованию");
@@ -705,6 +724,22 @@ namespace curse
             dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize, table);
             maxPages = dbhelper.maxPages;
             maxStrings = dbhelper.maxstrings;
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+           
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            showUser = !showUser;
+            button5_Click(sender, e);
         }
     }
 }

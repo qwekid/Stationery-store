@@ -47,6 +47,7 @@ namespace curse
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -61,8 +62,9 @@ namespace curse
             this.dataGridView1.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.dataGridView1.Location = new System.Drawing.Point(242, 54);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(546, 280);
+            this.dataGridView1.Size = new System.Drawing.Size(586, 280);
             this.dataGridView1.TabIndex = 0;
+            this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             this.dataGridView1.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_CellMouseDoubleClick);
             // 
             // button1
@@ -150,7 +152,7 @@ namespace curse
             this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.textBox1.Location = new System.Drawing.Point(242, 12);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(546, 29);
+            this.textBox1.Size = new System.Drawing.Size(586, 29);
             this.textBox1.TabIndex = 12;
             this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
@@ -194,9 +196,9 @@ namespace curse
             // button12
             // 
             this.button12.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button12.Location = new System.Drawing.Point(600, 341);
+            this.button12.Location = new System.Drawing.Point(630, 341);
             this.button12.Name = "button12";
-            this.button12.Size = new System.Drawing.Size(187, 57);
+            this.button12.Size = new System.Drawing.Size(197, 57);
             this.button12.TabIndex = 16;
             this.button12.Text = "Добавить запись";
             this.button12.UseVisualStyleBackColor = true;
@@ -228,7 +230,7 @@ namespace curse
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F);
-            this.label1.Location = new System.Drawing.Point(242, 384);
+            this.label1.Location = new System.Drawing.Point(442, 388);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(152, 24);
             this.label1.TabIndex = 19;
@@ -238,11 +240,12 @@ namespace curse
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F);
-            this.label2.Location = new System.Drawing.Point(400, 384);
+            this.label2.Location = new System.Drawing.Point(586, 388);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(20, 24);
             this.label2.TabIndex = 20;
             this.label2.Text = "0";
+            this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
             // flowLayoutPanel1
             // 
@@ -251,11 +254,26 @@ namespace curse
             this.flowLayoutPanel1.Size = new System.Drawing.Size(259, 40);
             this.flowLayoutPanel1.TabIndex = 21;
             // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Checked = true;
+            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F);
+            this.checkBox1.Location = new System.Drawing.Point(242, 387);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(190, 28);
+            this.checkBox1.TabIndex = 22;
+            this.checkBox1.Text = "Скрывать данные";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
             // AdminForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(799, 414);
+            this.ClientSize = new System.Drawing.Size(839, 417);
+            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -304,5 +322,6 @@ namespace curse
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }
