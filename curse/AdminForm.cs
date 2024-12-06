@@ -399,11 +399,28 @@ namespace curse
             textBox1.Text = "";
             label2.Text = maxStrings.ToString();
 
+            //отрисовка кнопок
             for (int i = 1; i <= maxPages; i++)
             {
                 AddButton($"{i}");
                 ButtonIndexes.Append(i);
             }
+
+            //скрытие логина, пароля и роли пользователя (0,2,3 колонки)
+            // Перебираем все строки в DataGridView
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                // Проверяем, чтобы строка была не новой (не добавленной)
+                if (!row.IsNewRow)
+                {
+                    // Заменяем значение в заданном столбце на ***
+                    string a = row.Cells[0].Value.ToString();
+                    row.Cells[0].Value = a[0].ToString()+ a[1].ToString()+ "*****";
+                    row.Cells[2].Value = "*****";
+                    row.Cells[3].Value = "*****";
+                }
+            }
+
         }
 
         private void button3_Click(object sender, EventArgs e)
