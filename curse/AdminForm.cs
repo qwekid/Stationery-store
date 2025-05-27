@@ -25,7 +25,7 @@ namespace curse
 
         private static readonly string viewproductsquery = "SELECT p.product_id, p.product_name AS 'Наименование товара', c.category_name AS 'Категория', s.supplier_name AS 'Поставщик', p.price AS 'Цена', p.stock AS 'Остаток на складе' FROM products p JOIN categories c ON p.category_id = c.category_id JOIN suppliers s ON p.supplier_id = s.supplier_id";
         private static readonly string viewcategoriesquery = "SELECT category_id,  category_name as 'Наименование категории', description as 'Описание категории' FROM categories";
-        private static readonly string viewusersquery ="SELECT user_id, username as 'Логин', email as 'Почта', password as 'Пароль', r.role_name as 'Роль' FROM users u JOIN roles r ON u.role = r.id";
+        private static readonly string viewusersquery = "SELECT user_id, username as 'Логин', email as 'Почта', password as 'Пароль', r.role_name as 'Роль' FROM users u JOIN roles r ON u.role = r.id";
         private static readonly string viewsalesquery = "SELECT \r\n u.username AS \"Продавец\", \r\n    GROUP_CONCAT(CONCAT(p.product_name, ': ', c.quantity, ' шт.') SEPARATOR '; ') AS \"Товары\", \r\n    s.sale_date AS \"Дата продажи\", \r\n    s.total_amount AS \"Финальная стоимость\" \r\nFROM \r\n    `check` c \r\nJOIN \r\n    sales s ON c.sales_sale_id = s.sale_id \r\nJOIN  \r\n    products p ON c.products_product_id = p.product_id \r\nJOIN \r\n    users u ON s.user_id = u.user_id ";
         private static readonly string viewsalesqueryend = "GROUP BY \r\n s.sale_id, u.username, s.sale_date, s.total_amount";
         private ContextMenuStrip contextMenuStrip;
@@ -33,42 +33,6 @@ namespace curse
         {
             InitializeComponent();
             this.ControlBox = false;
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            comboBox1.Items.Clear();
-            comboBox1.Items.Add("По наименованию");
-            query = viewcategoriesquery;
-            table = "categories";
-            id_string = "category_id";
-            dbhelper.LoadDataToDGV(dataGridView1, query);
-
-            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells;
-            dataGridView1.Columns[0].Visible = false;
-            textBox1.Text = "";
-        }
-
-        private void button6_Click(object sender, EventArgs e)
-        {
-            comboBox1.Items.Clear();
-            comboBox1.Items.Add("По продавцу");
-            comboBox1.Items.Add("По сумме");
-            comboBox1.Items.Add("По дате");
-            query = viewsalesquery+ viewsalesqueryend;
-            table = "sales";
-            id_string = "sale_id";
-            dbhelper.LoadDataToDGV(dataGridView1, query);
-
-            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells;
-
-            textBox1.Text = "";
-        }
-
-        private void button9_Click(object sender, EventArgs e)
-        {
-            ReportForm r = new ReportForm();
-            r.ShowDialog();
         }
 
         private void AdminForm_Load(object sender, EventArgs e)
@@ -85,22 +49,22 @@ namespace curse
             dbhelper.LoadDataToDGV(dataGridView1, query);
             dataGridView1.Columns[0].Visible = false;
             contextMenuStrip = new ContextMenuStrip();
-
+            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
 
         private void dataGridView1_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            
+
             // Проверяем, что двойной клик был внутри границ DataGridView и выбраная таблица не "продажи"
-            if (e.RowIndex >= 0 && e.ColumnIndex >= 0 && table!= "sales")
+            if (e.RowIndex >= 0 && e.ColumnIndex >= 0 && table != "sales")
             {
-                if (table == "products") 
+                if (table == "products")
                 {
                     System.Data.DataTable dt = new System.Data.DataTable();
                     int currendrowid = dataGridView1.CurrentRow.Index;
 
                     contextMenuStrip.Items.Clear();
-                    
+
 
                     query = $"select product_name from `check` c join products p on c.products_product_id = p.product_id where product_name = '{dataGridView1.Rows[currendrowid].Cells[0].Value}'";
                     dbhelper.LoadDataToDt(dt, query);
@@ -108,7 +72,8 @@ namespace curse
                     {
                         return;
                     }
-                    else {
+                    else
+                    {
 
                         ToolStripMenuItem updateRowMenuItem = new ToolStripMenuItem("Редактировать строку");
                         updateRowMenuItem.Click += UpdateRowMenuItem_Click;
@@ -155,7 +120,7 @@ namespace curse
                     query = $"select username from sales s join users u on s.user_id = u.user_id where username = '{dataGridView1.Rows[currendrowid].Cells[0].Value}' ";
                     dbhelper.LoadDataToDt(dt, query);
 
-                    
+
 
                     if (dt.Rows.Count > 0)
                     {
@@ -203,21 +168,22 @@ namespace curse
 
                 }
             }
-            
+
         }
 
         private void UpdateRowMenuItem_Click(object sender, EventArgs e)
         {
             System.Data.DataTable dt = new System.Data.DataTable();
-            switch (table) {
+            switch (table)
+            {
                 case ("products"):
                     if (MessageBox.Show("Вы уверены, что хотите редактировать этот элемент?", "Подтверждение редактирования", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                     {
-                        
+
                         query = $"Select category_id from categories where category_name = '{dataGridView1.CurrentRow.Cells[2].Value}'";
                         dbhelper.LoadDataToDt(dt, query);
 
-                        int category =Convert.ToInt32(dt.Rows[0].ItemArray[0]);
+                        int category = Convert.ToInt32(dt.Rows[0].ItemArray[0]);
                         dt = new System.Data.DataTable();
 
                         query = $"Select supplier_id from suppliers where supplier_name = '{dataGridView1.CurrentRow.Cells[3].Value}'";
@@ -234,7 +200,7 @@ namespace curse
                             // Обновляем данные на первой форме
                             this.AdminForm_Load(sender, e);
                         }
-                        
+
                     }
                     break;
                 case ("categories"):
@@ -243,7 +209,7 @@ namespace curse
                         int id = Convert.ToInt32(dataGridView1.CurrentRow.Cells[0].Value);
                         string name = dataGridView1.CurrentRow.Cells[1].Value.ToString();
                         string desc = dataGridView1.CurrentRow.Cells[2].Value.ToString();
-                        CreateCategory c = new CreateCategory(id,name, desc);
+                        CreateCategory c = new CreateCategory(id, name, desc);
 
                         if (c.ShowDialog() == DialogResult.OK)
                         {
@@ -277,23 +243,24 @@ namespace curse
                     }
                     break;
             }
-            
+
         }
-        
-        private void DeleteRowMenuItem_ClickError(object sender, EventArgs e) {
+
+        private void DeleteRowMenuItem_ClickError(object sender, EventArgs e)
+        {
             MessageBox.Show("Невозможно удалить эту строку!");
         }
 
         private void DeleteRowMenuItem_Click(object sender, EventArgs e)
         {
             // Проверяем, какие строки выбраны в DataGridView и удаляем их
-            if (dataGridView1.CurrentRow != null && dataGridView1.CurrentRow.Index >= 0 && MessageBox.Show("Вы уверены, что хотите удалить этот элемент?","Подтверждение удаления",MessageBoxButtons.YesNo,MessageBoxIcon.Warning) == DialogResult.Yes)
+            if (dataGridView1.CurrentRow != null && dataGridView1.CurrentRow.Index >= 0 && MessageBox.Show("Вы уверены, что хотите удалить этот элемент?", "Подтверждение удаления", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
                 int currendrowid = dataGridView1.CurrentRow.Index - 1;
                 dataGridView1.Rows.RemoveAt(currendrowid);
                 query = $"DELETE FROM `officesupplies`.`{table}` WHERE (`{id_string}` = '{dataGridView1.Rows[currendrowid].Cells[0].Value}');";
                 dbhelper.InsertDataOnDb(query);
-                if (table == "products") { query = viewproductsquery;}
+                if (table == "products") { query = viewproductsquery; }
                 else if (table == "categories") { query = viewcategoriesquery; }
                 else if (table == "sales") { query = viewsalesquery; }
                 else if (table == "users") { query = viewusersquery; }
@@ -314,26 +281,76 @@ namespace curse
             if (table == "products") { query = viewproductsquery + $" WHERE p.product_name LIKE '%{txt}%' OR s.supplier_name LIKE '%{txt}%' OR p.price LIKE '%{txt}%' OR p.stock LIKE '%{txt}%';"; }
             else if (table == "categories") { query = viewcategoriesquery + $" WHERE category_name LIKE '%{txt}%'"; }
             else if (table == "sales") { query = viewsalesquery + $" WHERE \r\n    u.username LIKE '%{txt}%' \r\n    OR p.product_name LIKE '%{txt}%' \r\n    OR c.quantity LIKE '%{txt}%' \r\n    OR s.sale_date LIKE '%{txt}%' \r\n    OR s.total_amount LIKE '%{txt}%'" + viewsalesqueryend; }
-            else if (table == "users") { query = viewusersquery+ $" Where username Like '%{txt}%'";}
+            else if (table == "users") { query = viewusersquery + $" Where username Like '%{txt}%'"; }
             else if (table == "suppliers") { query = $"SELECT supplier_name as 'Наименование компании', contact_email as 'Электронная почта', phone as 'Контактный телефон' FROM suppliers Where supplier_name Like '%{txt}%' OR contact_email Like '%{txt}%' OR phone Like '%{txt}%'"; }
-           
+
 
             dbhelper.LoadDataToDGV(dataGridView1, query);
-            
+
         }
 
         private void button7_Click(object sender, EventArgs e)
         {
-            
+
         }
 
         private void button8_Click(object sender, EventArgs e)
         {
-            
+
+        }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            switch (table)
+            {
+                case "sales":
+                    CreateOrder sales = new CreateOrder();
+                    if (sales.ShowDialog() == DialogResult.OK)
+                    {
+
+                        this.AdminForm_Load(sender, e);
+                    }
+
+                    break;
+                case "products":
+                    CreateProduct products = new CreateProduct();
+                    if (products.ShowDialog() == DialogResult.OK)
+                    {
+                        this.AdminForm_Load(sender, e);
+                    }
+                    break;
+                case "categories":
+                    CreateCategory c = new CreateCategory();
+                    if (c.ShowDialog() == DialogResult.OK)
+                    {
+                        this.AdminForm_Load(sender, e);
+                    }
+                    break;
+                case "users":
+                    CreateUser users = new CreateUser();
+                    if (users.ShowDialog() == DialogResult.OK)
+                    {
+                        this.AdminForm_Load(sender, e);
+                    }
+                    break;
+                case "suppliers":
+                    CreateSuppliers sup = new CreateSuppliers();
+                    if (sup.ShowDialog() == DialogResult.OK)
+                    {
+                        this.AdminForm_Load(sender, e);
+                    }
+                    break;
+            }
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
+
             comboBox1.Items.Clear();
             comboBox1.Items.Add("По наименованию");
             comboBox1.Items.Add("по категории");
@@ -346,7 +363,21 @@ namespace curse
 
             dbhelper.LoadDataToDGV(dataGridView1, query);
 
-            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells;
+            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridView1.Columns[0].Visible = false;
+            textBox1.Text = "";
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            comboBox1.Items.Clear();
+            comboBox1.Items.Add("По наименованию");
+            query = viewcategoriesquery;
+            table = "categories";
+            id_string = "category_id";
+            dbhelper.LoadDataToDGV(dataGridView1, query);
+
+            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridView1.Columns[0].Visible = false;
             textBox1.Text = "";
         }
@@ -369,6 +400,7 @@ namespace curse
 
         private void button3_Click(object sender, EventArgs e)
         {
+
             comboBox1.Items.Clear();
             comboBox1.Items.Add("По наименованию");
             comboBox1.Items.Add("По электоронной почте");
@@ -384,12 +416,31 @@ namespace curse
             dataGridView1.Columns[0].Visible = false;
         }
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void button6_Click(object sender, EventArgs e)
         {
+            comboBox1.Items.Clear();
+            comboBox1.Items.Add("По продавцу");
+            comboBox1.Items.Add("По сумме");
+            comboBox1.Items.Add("По дате");
+            query = viewsalesquery + viewsalesqueryend;
+            table = "sales";
+            id_string = "sale_id";
+            dbhelper.LoadDataToDGV(dataGridView1, query);
+
+            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+            textBox1.Text = "";
+        }
+
+        private void button9_Click_1(object sender, EventArgs e)
+        {
+            ReportForm r = new ReportForm();
+            r.ShowDialog();
         }
 
         private void button11_Click(object sender, EventArgs e)
         {
+
             if (table == "categories")
             {
                 if (comboBox1.SelectedIndex == 0)
@@ -462,9 +513,10 @@ namespace curse
                 }
             }
         }
-            
-        private void button10_Click(object sender, EventArgs e)
+
+        private void button10_Click_1(object sender, EventArgs e)
         {
+
             if (table == "categories")
             {
                 if (comboBox1.SelectedIndex == 0)
@@ -486,7 +538,7 @@ namespace curse
                 {
                     dataGridView1.Sort(dataGridView1.Columns["Дата продажи"], System.ComponentModel.ListSortDirection.Descending);
                 }
-                
+
 
 
             }
@@ -541,51 +593,7 @@ namespace curse
             }
         }
 
-        private void button12_Click(object sender, EventArgs e)
-        {
-                switch (table)
-                {
-                    case "sales":
-                        CreateOrder sales = new CreateOrder();
-                        if (sales.ShowDialog() == DialogResult.OK)
-                        {
-                            
-                            this.AdminForm_Load(sender, e);
-                        }
-
-                        break;
-                    case "products":
-                        CreateProduct products = new CreateProduct();
-                        if (products.ShowDialog() == DialogResult.OK)
-                        {
-                            this.AdminForm_Load(sender, e);
-                        }
-                        break;
-                    case "categories":
-                        CreateCategory c = new CreateCategory();
-                        if (c.ShowDialog() == DialogResult.OK)
-                        {
-                            this.AdminForm_Load(sender, e);
-                        }
-                        break;
-                    case "users":
-                        CreateUser users = new CreateUser();
-                        if (users.ShowDialog() == DialogResult.OK)
-                        {
-                            this.AdminForm_Load(sender, e);
-                        }
-                        break;
-                    case "suppliers":
-                        CreateSuppliers sup = new CreateSuppliers();
-                        if (sup.ShowDialog() == DialogResult.OK)
-                        {
-                            this.AdminForm_Load(sender, e);
-                        }
-                        break;
-                }
-        }
-
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
