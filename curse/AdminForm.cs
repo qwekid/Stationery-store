@@ -32,7 +32,7 @@ namespace curse
         public AdminForm()
         {
             InitializeComponent();
-            this.ControlBox = false;
+            this.FormClosing += FormClose;
         }
 
         private void AdminForm_Load(object sender, EventArgs e)
@@ -278,19 +278,14 @@ namespace curse
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
             string txt = textBox1.Text;
-            if (table == "products") { query = viewproductsquery + $" WHERE p.product_name LIKE '%{txt}%' OR s.supplier_name LIKE '%{txt}%' OR p.price LIKE '%{txt}%' OR p.stock LIKE '%{txt}%';"; }
-            else if (table == "categories") { query = viewcategoriesquery + $" WHERE category_name LIKE '%{txt}%'"; }
+            if (table == "products") { query = viewproductsquery + $" WHERE p.product_name LIKE '%{txt}%' OR c.category_name LIKE '%{txt}%' OR s.supplier_name LIKE '%{txt}%' OR p.price LIKE '%{txt}%' OR p.stock LIKE '%{txt}%';"; }
+            else if (table == "categories") { query = viewcategoriesquery + $" WHERE category_name LIKE '%{txt}%' OR description LIKE '%{txt}%'"; }
             else if (table == "sales") { query = viewsalesquery + $" WHERE \r\n    u.username LIKE '%{txt}%' \r\n    OR p.product_name LIKE '%{txt}%' \r\n    OR c.quantity LIKE '%{txt}%' \r\n    OR s.sale_date LIKE '%{txt}%' \r\n    OR s.total_amount LIKE '%{txt}%'" + viewsalesqueryend; }
             else if (table == "users") { query = viewusersquery + $" Where username Like '%{txt}%'"; }
             else if (table == "suppliers") { query = $"SELECT supplier_name as 'Наименование компании', contact_email as 'Электронная почта', phone as 'Контактный телефон' FROM suppliers Where supplier_name Like '%{txt}%' OR contact_email Like '%{txt}%' OR phone Like '%{txt}%'"; }
 
 
             dbhelper.LoadDataToDGV(dataGridView1, query);
-
-        }
-
-        private void button7_Click(object sender, EventArgs e)
-        {
 
         }
 
@@ -596,6 +591,47 @@ namespace curse
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            if (dbhelper.CreateDump()) {
+                MessageBox.Show("Резерная копия успешно создана! \n Её можно найти в папке dumps", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void FormClose(object sender, FormClosingEventArgs e)
+        {
+            var dialogResult = MessageBox.Show(
+                "Экспортировать базу данных перед выходом?",
+                "Подтверждение",
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question
+            );
+
+            if (dialogResult == DialogResult.Yes)
+            {
+                Cursor.Current = Cursors.WaitCursor;
+
+                bool dumpCreated = dbhelper.CreateDump();
+
+                Cursor.Current = Cursors.Default;
+
+                if (!dumpCreated)
+                {
+                    MessageBox.Show("Не удалось создать резервную копию!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    e.Cancel = true;
+                }
+
+                Environment.Exit(0);
+            }
+            else if (dialogResult == DialogResult.Cancel)
+            {
+                e.Cancel = true;
+            }
+            else {
+                Environment.Exit(0);
+            }
         }
     }
 }

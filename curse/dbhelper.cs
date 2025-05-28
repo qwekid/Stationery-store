@@ -9,6 +9,8 @@ using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Collections;
+using System.Diagnostics;
+using System.IO;
 
 namespace curse
 {
@@ -145,5 +147,97 @@ namespace curse
                 return 1;
             }
         }
+
+        /// <summary>
+        /// Создает дамп базы данных MySQL
+        /// </summary>
+        /// <returns>True если успешно, False в случае ошибки</returns>
+        public static bool CreateDump()
+        {
+            string server = "localhost";
+            string database = "officesupplies";
+            string userId = "root";
+            string password = "root";
+            string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+            string projectRoot = AppDomain.CurrentDomain.BaseDirectory;
+            string dumpDirPath = Path.Combine(projectRoot, "dumps");
+            string outputFile = Path.Combine(dumpDirPath, $"db_dump_{timestamp}.sql");
+            try
+            {
+                string mysqldumpPath = FindMysqldumpPath();
+
+                if (string.IsNullOrEmpty(mysqldumpPath))
+                {
+                    throw new Exception("mysqldump не найден. Убедитесь, что MySQL Server установлен.");
+                }
+                Directory.CreateDirectory(Path.GetDirectoryName(outputFile));
+
+                string arguments = $"--host={server} --user={userId} --password={password} " +
+                                   $"--opt --routines --triggers --events --single-transaction " +
+                                   $"--result-file=\"{outputFile}\" {database}";
+
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    FileName = mysqldumpPath,
+                    Arguments = arguments,
+                    UseShellExecute = false,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true
+                };
+
+                using (Process process = Process.Start(startInfo))
+                {
+                    string error = process.StandardError.ReadToEnd();
+                    process.WaitForExit();
+
+                    if (process.ExitCode != 0)
+                    {
+                        throw new Exception($"Ошибка при создании дампа: {error}");
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Пытается найти путь к mysqldump.exe
+        /// </summary>
+        private static string FindMysqldumpPath()
+        {
+            string[] possiblePaths =
+            {
+            @"C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqldump.exe",
+            @"C:\Program Files\MySQL\MySQL Server 5.7\bin\mysqldump.exe",
+            @"C:\Program Files (x86)\MySQL\MySQL Server 5.6\bin\mysqldump.exe",
+            @"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysqldump.exe"
+        };
+
+            foreach (string path in possiblePaths)
+            {
+                if (File.Exists(path))
+                {
+                    return path;
+                }
+            }
+
+            string pathVariable = Environment.GetEnvironmentVariable("PATH");
+            foreach (string path in pathVariable.Split(';'))
+            {
+                string fullPath = Path.Combine(path, "mysqldump.exe");
+                if (File.Exists(fullPath))
+                {
+                    return fullPath;
+                }
+            }
+
+            return null;
+        }
     }
 }
+
