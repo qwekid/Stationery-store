@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using static System.Net.Mime.MediaTypeNames;
+using Application = System.Windows.Forms.Application;
 
 namespace curse
 {
@@ -284,9 +285,7 @@ namespace curse
             else if (table == "users") { query = viewusersquery + $" Where username Like '%{txt}%'"; }
             else if (table == "suppliers") { query = $"SELECT supplier_name as 'Наименование компании', contact_email as 'Электронная почта', phone as 'Контактный телефон' FROM suppliers Where supplier_name Like '%{txt}%' OR contact_email Like '%{txt}%' OR phone Like '%{txt}%'"; }
 
-
             dbhelper.LoadDataToDGV(dataGridView1, query);
-
         }
 
         private void button8_Click(object sender, EventArgs e)
@@ -529,7 +528,7 @@ namespace curse
                 {
                     dataGridView1.Sort(dataGridView1.Columns["Финальная стоимость"], System.ComponentModel.ListSortDirection.Descending);
                 }
-                else if (comboBox1.SelectedIndex == 1)
+                else if (comboBox1.SelectedIndex == 2)
                 {
                     dataGridView1.Sort(dataGridView1.Columns["Дата продажи"], System.ComponentModel.ListSortDirection.Descending);
                 }
@@ -623,14 +622,14 @@ namespace curse
                     e.Cancel = true;
                 }
 
-                Environment.Exit(0);
+                Application.Exit();
             }
             else if (dialogResult == DialogResult.Cancel)
             {
                 e.Cancel = true;
             }
             else {
-                Environment.Exit(0);
+                Application.Exit();
             }
         }
     }

@@ -22,6 +22,8 @@ namespace curse
             string login = textBox1.Text;
             string password = textBox2.Text;
 
+            string hashedPassword = Hasher.HashPassword(password);
+
             int role = dbhelper.CheckUserRole(login, password);
 
             if (role == 2)

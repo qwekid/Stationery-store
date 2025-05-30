@@ -23,6 +23,7 @@ namespace curse
             InitializeComponent();
             this.ControlBox = false;
             isRedact = false;
+            button12.Text = "Добавить запись";
         }
 
         public CreateUser(int id):this()
@@ -38,6 +39,7 @@ namespace curse
             textBox2.Text = dt.Rows[0].ItemArray[2].ToString();
             textBox3.Text = dt.Rows[0].ItemArray[3].ToString();
             comboBox1.SelectedIndex = Convert.ToInt32(dt.Rows[0].ItemArray[4].ToString()) -1;
+            button12.Text = "Редактировать запись";
         }
 
 
@@ -57,7 +59,7 @@ namespace curse
             {
                 if (textBox1.Text != "" && textBox2.Text != "" && textBox3.Text != "" && comboBox1.SelectedIndex != -1)
                 {
-                    query = $"INSERT INTO `officesupplies`.`users` (`username`, `email`, `password`, `role`) VALUES ('{textBox1.Text}', '{textBox2.Text}', '{textBox3.Text}', '{comboBox1.SelectedIndex + 1}');";
+                    query = $"INSERT INTO `officesupplies`.`users` (`username`, `email`, `password`, `role`) VALUES ('{textBox1.Text}', '{textBox2.Text}', '{Hasher.HashPassword(textBox3.Text)}', '{comboBox1.SelectedIndex + 1}');";
                     dbhelper.InsertDataOnDb(query);
                     MessageBox.Show("Запись успешно добавлена");
 
@@ -79,7 +81,7 @@ namespace curse
                     string password = textBox3.Text;
                     int role = comboBox1.SelectedIndex + 1;
 
-                    query = $"UPDATE `officesupplies`.`users` SET `username` = '{name}', `email` = '{mail}', `password` = '{password}', `role` = '{role}' WHERE (`user_id` = '{Id}');;";
+                    query = $"UPDATE `officesupplies`.`users` SET `username` = '{name}', `email` = '{mail}', `password` = '{Hasher.HashPassword(password)}', `role` = '{role}' WHERE (`user_id` = '{Id}');;";
                     dbhelper.InsertDataOnDb(query);
                     MessageBox.Show("Запись успешно добавлена");
 

@@ -53,7 +53,7 @@ namespace curse
                 DataTable dt = new DataTable();
                 da.Fill(dt);
 
-                if (password == dt.Rows[0].ItemArray.GetValue(3).ToString())
+                if (Hasher.VerifyPassword(password, dt.Rows[0].ItemArray.GetValue(3).ToString()))
                 {
                     if (Convert.ToInt32(dt.Rows[0].ItemArray.GetValue(4)) == 2)
                     {
