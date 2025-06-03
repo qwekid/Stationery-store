@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using System.Xml.Serialization;
 using static System.Net.Mime.MediaTypeNames;
 using Application = System.Windows.Forms.Application;
 
@@ -30,8 +31,9 @@ namespace curse
         private static readonly string viewsalesquery = "SELECT \r\n u.username AS \"Продавец\", \r\n    GROUP_CONCAT(CONCAT(p.product_name, ': ', c.quantity, ' шт.') SEPARATOR '; ') AS \"Товары\", \r\n    s.sale_date AS \"Дата продажи\", \r\n    s.total_amount AS \"Финальная стоимость\" \r\nFROM \r\n    `check` c \r\nJOIN \r\n    sales s ON c.sales_sale_id = s.sale_id \r\nJOIN  \r\n    products p ON c.products_product_id = p.product_id \r\nJOIN \r\n    users u ON s.user_id = u.user_id ";
         private static readonly string viewsalesqueryend = "GROUP BY \r\n s.sale_id, u.username, s.sale_date, s.total_amount";
         private ContextMenuStrip contextMenuStrip;
-        public AdminForm()
+        public AdminForm(string tableName)
         {
+            table = tableName;
             InitializeComponent();
             this.FormClosing += FormClose;
         }
@@ -39,18 +41,24 @@ namespace curse
         private void AdminForm_Load(object sender, EventArgs e)
         {
             comboBox1.Items.Clear();
-            comboBox1.Items.Add("По наименованию");
-            comboBox1.Items.Add("по категории");
-            comboBox1.Items.Add("По поставщику");
-            comboBox1.Items.Add("По цене");
-            comboBox1.Items.Add("По отатку на складе");
-            query = viewproductsquery;
-            table = "products";
-            id_string = "product_name";
-            dbhelper.LoadDataToDGV(dataGridView1, query);
-            dataGridView1.Columns[0].Visible = false;
-            contextMenuStrip = new ContextMenuStrip();
-            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            switch (table) {
+                case "sales":
+                    loadSales();
+                    break;
+                case "products":
+                    loadProducts();
+                    break;
+                case "users":
+                    loadUsers();
+                    break;
+                case "categories":
+                    loadCategories();
+                    break;
+                case "suppliers":
+                    loadSuppliers();
+                    break;
+            }
+            
         }
 
         private void dataGridView1_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -346,68 +354,26 @@ namespace curse
         {
 
             comboBox1.Items.Clear();
-            comboBox1.Items.Add("По наименованию");
-            comboBox1.Items.Add("по категории");
-            comboBox1.Items.Add("По поставщику");
-            comboBox1.Items.Add("По цене");
-            comboBox1.Items.Add("По отатку на складе");
-            query = viewproductsquery;
-            table = "products";
-            id_string = "product_id";
-
-            dbhelper.LoadDataToDGV(dataGridView1, query);
-
-            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dataGridView1.Columns[0].Visible = false;
-            textBox1.Text = "";
+            
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             comboBox1.Items.Clear();
-            comboBox1.Items.Add("По наименованию");
-            query = viewcategoriesquery;
-            table = "categories";
-            id_string = "category_id";
-            dbhelper.LoadDataToDGV(dataGridView1, query);
-
-            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dataGridView1.Columns[0].Visible = false;
-            textBox1.Text = "";
+            
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
             comboBox1.Items.Clear();
-            comboBox1.Items.Add("По логину");
-            comboBox1.Items.Add("По роли");
-            query = viewusersquery;
-            table = "users";
-            id_string = "user_id";
-
-            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-
-            dbhelper.LoadDataToDGV(dataGridView1, query);
-            dataGridView1.Columns[0].Visible = false;
-            textBox1.Text = "";
+            
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
 
             comboBox1.Items.Clear();
-            comboBox1.Items.Add("По наименованию");
-            comboBox1.Items.Add("По электоронной почте");
-            comboBox1.Items.Add("По телефону");
-            query = "SELECT supplier_id, supplier_name as 'Наименование компании', contact_email as 'Электронная почта', phone as 'Контактный телефон' FROM suppliers";
-            table = "suppliers";
-            id_string = "supplier_id";
-
-            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-
-            dbhelper.LoadDataToDGV(dataGridView1, query);
-            textBox1.Text = "";
-            dataGridView1.Columns[0].Visible = false;
+            
         }
 
         private void button6_Click(object sender, EventArgs e)
@@ -631,6 +597,78 @@ namespace curse
             else {
                 Application.Exit();
             }
+        }
+        private void loadSales()
+        {
+            comboBox1.Items.Add("По продавцу");
+            comboBox1.Items.Add("По сумме");
+            comboBox1.Items.Add("По дате");
+            query = viewsalesquery + viewsalesqueryend;
+            table = "sales";
+            id_string = "sale_id";
+            dbhelper.LoadDataToDGV(dataGridView1, query);
+
+            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+            textBox1.Text = "";
+        }
+
+        private void loadProducts() {
+            comboBox1.Items.Add("По наименованию");
+            comboBox1.Items.Add("по категории");
+            comboBox1.Items.Add("По поставщику");
+            comboBox1.Items.Add("По цене");
+            comboBox1.Items.Add("По отатку на складе");
+            query = viewproductsquery;
+            table = "products";
+            id_string = "product_id";
+
+            dbhelper.LoadDataToDGV(dataGridView1, query);
+
+            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridView1.Columns[0].Visible = false;
+            textBox1.Text = "";
+        }
+
+        private void loadUsers() {
+            comboBox1.Items.Add("По логину");
+            comboBox1.Items.Add("По роли");
+            query = viewusersquery;
+            table = "users";
+            id_string = "user_id";
+
+            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+            dbhelper.LoadDataToDGV(dataGridView1, query);
+            dataGridView1.Columns[0].Visible = false;
+            textBox1.Text = "";
+        }
+
+        private void loadCategories() {
+            comboBox1.Items.Add("По наименованию");
+            query = viewcategoriesquery;
+            table = "categories";
+            id_string = "category_id";
+            dbhelper.LoadDataToDGV(dataGridView1, query);
+
+            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridView1.Columns[0].Visible = false;
+            textBox1.Text = "";
+        }
+
+        private void loadSuppliers() {
+            comboBox1.Items.Add("По наименованию");
+            comboBox1.Items.Add("По электоронной почте");
+            comboBox1.Items.Add("По телефону");
+            query = "SELECT supplier_id, supplier_name as 'Наименование компании', contact_email as 'Электронная почта', phone as 'Контактный телефон' FROM suppliers";
+            table = "suppliers";
+            id_string = "supplier_id";
+
+            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+            dbhelper.LoadDataToDGV(dataGridView1, query);
+            textBox1.Text = "";
+            dataGridView1.Columns[0].Visible = false;
         }
     }
 }

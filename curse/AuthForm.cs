@@ -28,7 +28,7 @@ namespace curse
 
             if (role == 2)
             {
-                AdminForm a = new AdminForm();
+                MainAdminForm a = new MainAdminForm();
                 a.Show();
                 this.Hide();
             }
