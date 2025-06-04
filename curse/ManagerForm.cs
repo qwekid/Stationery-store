@@ -25,10 +25,11 @@ namespace curse
         private static readonly string viewsalesqueryend = "GROUP BY \r\n s.sale_id, u.username, s.sale_date, s.total_amount";
         private ContextMenuStrip contextMenuStrip;
 
-        public ManagerForm()
+        public ManagerForm(string tableName)
         {
             InitializeComponent();
-            this.FormClosing += FormClose;
+            table = tableName;
+            
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -40,17 +41,15 @@ namespace curse
         private void ManagerForm_Load(object sender, EventArgs e)
         {
             comboBox1.Items.Clear();
-            comboBox1.Items.Add("По наименованию");
-            comboBox1.Items.Add("по категории");
-            comboBox1.Items.Add("По поставщику");
-            comboBox1.Items.Add("По цене");
-            comboBox1.Items.Add("По отатку на складе");
-            query = viewproductsquery;
-            table = "products";
-            id_string = "product_name";
-            dbhelper.LoadDataToDGV(dataGridView1, query);
-            dataGridView1.Columns[0].Visible = false;
-            contextMenuStrip = new ContextMenuStrip();
+            switch (table)
+            {
+                case "sales":
+                    loadSales();
+                    break;
+                case "products":
+                    loadProducts();
+                    break;
+            }
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
 
@@ -247,40 +246,7 @@ namespace curse
             r.ShowDialog();
         }
 
-        private void FormClose(object sender, FormClosingEventArgs e)
-        {
-            var dialogResult = MessageBox.Show(
-                "Экспортировать базу данных перед выходом?",
-                "Подтверждение",
-                MessageBoxButtons.YesNoCancel,
-                MessageBoxIcon.Question
-            );
-
-            if (dialogResult == DialogResult.Yes)
-            {
-                Cursor.Current = Cursors.WaitCursor;
-
-                bool dumpCreated = dbhelper.CreateDump();
-
-                Cursor.Current = Cursors.Default;
-
-                if (!dumpCreated)
-                {
-                    MessageBox.Show("Не удалось создать резервную копию!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    e.Cancel = true;
-                }
-
-                Application.Exit();
-            }
-            else if (dialogResult == DialogResult.Cancel)
-            {
-                e.Cancel = true;
-            }
-            else
-            {
-                Application.Exit();
-            }
-        }
+        
 
         private void button12_Click(object sender, EventArgs e)
         {
@@ -314,7 +280,40 @@ namespace curse
 
         private void button16_Click(object sender, EventArgs e)
         {
-            System.Windows.Forms.Application.Exit();
+            this.DialogResult = DialogResult.OK;
+        }
+
+        private void loadSales()
+        {
+            comboBox1.Items.Add("По продавцу");
+            comboBox1.Items.Add("По сумме");
+            comboBox1.Items.Add("По дате");
+            query = viewsalesquery + viewsalesqueryend;
+            table = "sales";
+            id_string = "sale_id";
+            dbhelper.LoadDataToDGV(dataGridView1, query);
+
+            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+            textBox1.Text = "";
+        }
+
+        private void loadProducts()
+        {
+            comboBox1.Items.Add("По наименованию");
+            comboBox1.Items.Add("по категории");
+            comboBox1.Items.Add("По поставщику");
+            comboBox1.Items.Add("По цене");
+            comboBox1.Items.Add("По отатку на складе");
+            query = viewproductsquery;
+            table = "products";
+            id_string = "product_id";
+
+            dbhelper.LoadDataToDGV(dataGridView1, query);
+
+            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridView1.Columns[0].Visible = false;
+            textBox1.Text = "";
         }
     }
 }

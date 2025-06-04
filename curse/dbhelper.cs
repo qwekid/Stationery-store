@@ -152,15 +152,14 @@ namespace curse
         /// Создает дамп базы данных MySQL
         /// </summary>
         /// <returns>True если успешно, False в случае ошибки</returns>
-        public static bool CreateDump()
+        public static bool CreateDump(string selectedPath)
         {
             string server = "localhost";
             string database = "officesupplies";
             string userId = "root";
             string password = "root";
             string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-            string projectRoot = AppDomain.CurrentDomain.BaseDirectory;
-            string dumpDirPath = Path.Combine(projectRoot, "dumps");
+            string dumpDirPath = selectedPath;
             string outputFile = Path.Combine(dumpDirPath, $"db_dump_{timestamp}.sql");
             try
             {

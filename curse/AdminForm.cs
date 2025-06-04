@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Security.Cryptography;
@@ -35,7 +36,6 @@ namespace curse
         {
             table = tableName;
             InitializeComponent();
-            this.FormClosing += FormClose;
         }
 
         private void AdminForm_Load(object sender, EventArgs e)
@@ -281,7 +281,7 @@ namespace curse
         }
         private void button4_Click(object sender, EventArgs e)
         {
-            System.Windows.Forms.Application.Exit();
+            this.DialogResult = DialogResult.OK;
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -560,44 +560,23 @@ namespace curse
 
         private void button7_Click(object sender, EventArgs e)
         {
-            if (dbhelper.CreateDump()) {
-                MessageBox.Show("Резерная копия успешно создана! \n Её можно найти в папке dumps", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-        }
+            FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
 
-        private void FormClose(object sender, FormClosingEventArgs e)
-        {
-            var dialogResult = MessageBox.Show(
-                "Экспортировать базу данных перед выходом?",
-                "Подтверждение",
-                MessageBoxButtons.YesNoCancel,
-                MessageBoxIcon.Question
-            );
+            folderBrowserDialog.Description = "Выберите папку для сохранения";
+            folderBrowserDialog.ShowNewFolderButton = true;
+            string projectRoot = AppDomain.CurrentDomain.BaseDirectory;
+            folderBrowserDialog.SelectedPath = Path.Combine(projectRoot, "dumps");
 
-            if (dialogResult == DialogResult.Yes)
+            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
             {
-                Cursor.Current = Cursors.WaitCursor;
-
-                bool dumpCreated = dbhelper.CreateDump();
-
-                Cursor.Current = Cursors.Default;
-
-                if (!dumpCreated)
+                string selectedPath = folderBrowserDialog.SelectedPath;
+                if (dbhelper.CreateDump(selectedPath))
                 {
-                    MessageBox.Show("Не удалось создать резервную копию!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    e.Cancel = true;
+                    MessageBox.Show("Резерная копия успешно создана! \n Её можно найти в папке dumps", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-
-                Application.Exit();
-            }
-            else if (dialogResult == DialogResult.Cancel)
-            {
-                e.Cancel = true;
-            }
-            else {
-                Application.Exit();
             }
         }
+
         private void loadSales()
         {
             comboBox1.Items.Add("По продавцу");

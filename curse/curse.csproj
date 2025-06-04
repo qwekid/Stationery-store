@@ -104,6 +104,12 @@
     <Compile Include="MainAdminForm.Designer.cs">
       <DependentUpon>MainAdminForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="MainManagerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainManagerForm.Designer.cs">
+      <DependentUpon>MainManagerForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ManagerForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -142,6 +148,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MainAdminForm.resx">
       <DependentUpon>MainAdminForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainManagerForm.resx">
+      <DependentUpon>MainManagerForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ManagerForm.resx">
       <DependentUpon>ManagerForm.cs</DependentUpon>

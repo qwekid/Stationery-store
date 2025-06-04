@@ -55,9 +55,9 @@ namespace curse
             this.tableLayoutPanel2.SetColumnSpan(this.dataGridView1, 2);
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
-            this.dataGridView1.Location = new System.Drawing.Point(3, 103);
+            this.dataGridView1.Location = new System.Drawing.Point(3, 93);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(793, 432);
+            this.dataGridView1.Size = new System.Drawing.Size(793, 395);
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             this.dataGridView1.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_CellMouseDoubleClick);
@@ -68,7 +68,7 @@ namespace curse
             this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBox1.Location = new System.Drawing.Point(3, 68);
+            this.textBox1.Location = new System.Drawing.Point(3, 58);
             this.textBox1.MaxLength = 200;
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(524, 29);
@@ -98,7 +98,7 @@ namespace curse
             this.button4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.button4.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.button4.ForeColor = System.Drawing.Color.Red;
-            this.button4.Location = new System.Drawing.Point(533, 541);
+            this.button4.Location = new System.Drawing.Point(533, 494);
             this.button4.Name = "button4";
             this.tableLayoutPanel2.SetRowSpan(this.button4, 2);
             this.button4.Size = new System.Drawing.Size(263, 84);
@@ -113,7 +113,7 @@ namespace curse
             this.button12.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.button12.Dock = System.Windows.Forms.DockStyle.Fill;
             this.button12.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button12.Location = new System.Drawing.Point(3, 586);
+            this.button12.Location = new System.Drawing.Point(3, 539);
             this.button12.Name = "button12";
             this.button12.Size = new System.Drawing.Size(524, 39);
             this.button12.TabIndex = 22;
@@ -139,12 +139,12 @@ namespace curse
             this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 5;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(799, 628);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(799, 581);
             this.tableLayoutPanel2.TabIndex = 18;
             // 
             // tableLayoutPanel3
@@ -155,7 +155,7 @@ namespace curse
             this.tableLayoutPanel3.Controls.Add(this.button11, 0, 0);
             this.tableLayoutPanel3.Controls.Add(this.button10, 1, 0);
             this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel3.Location = new System.Drawing.Point(533, 43);
+            this.tableLayoutPanel3.Location = new System.Drawing.Point(533, 33);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
             this.tableLayoutPanel3.RowCount = 1;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
@@ -193,7 +193,7 @@ namespace curse
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(3, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(524, 40);
+            this.label1.Size = new System.Drawing.Size(524, 30);
             this.label1.TabIndex = 25;
             this.label1.Text = "Поиск";
             this.label1.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
@@ -202,7 +202,7 @@ namespace curse
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(799, 628);
+            this.ClientSize = new System.Drawing.Size(799, 581);
             this.Controls.Add(this.tableLayoutPanel2);
             this.MinimumSize = new System.Drawing.Size(815, 620);
             this.Name = "AdminForm";

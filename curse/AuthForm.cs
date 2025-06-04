@@ -34,7 +34,7 @@ namespace curse
             }
             else if (role == 1)
             {
-                ManagerForm a = new ManagerForm();
+                MainManagerForm a = new MainManagerForm();
                 a.Show();
                 this.Hide();
             }
