@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
 using System.Reflection.Emit;
@@ -25,6 +26,8 @@ namespace curse
         private static string table = string.Empty;
         private static string id_string = string.Empty;
 
+        private static int pageSize = 5;
+        private static int pageNumber = 1;
 
         private static readonly string viewproductsquery = "SELECT p.product_id, p.product_name AS 'Наименование товара', c.category_name AS 'Категория', s.supplier_name AS 'Поставщик', p.price AS 'Цена', p.stock AS 'Остаток на складе' FROM products p JOIN categories c ON p.category_id = c.category_id JOIN suppliers s ON p.supplier_id = s.supplier_id";
         private static readonly string viewcategoriesquery = "SELECT category_id,  category_name as 'Наименование категории', description as 'Описание категории' FROM categories";
@@ -274,7 +277,7 @@ namespace curse
                 else if (table == "sales") { query = viewsalesquery; }
                 else if (table == "users") { query = viewusersquery; }
                 else if (table == "suppliers") { query = $"SELECT supplier_name as 'Наименование компании', contact_email as 'Электронная почта', phone as 'Контактный телефон' FROM suppliers"; }
-                dbhelper.LoadDataToDGV(dataGridView1, query);
+                dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize);
                 dataGridView1.Columns[0].Visible = false;
             }
 
@@ -293,7 +296,7 @@ namespace curse
             else if (table == "users") { query = viewusersquery + $" Where username Like '%{txt}%'"; }
             else if (table == "suppliers") { query = $"SELECT supplier_name as 'Наименование компании', contact_email as 'Электронная почта', phone as 'Контактный телефон' FROM suppliers Where supplier_name Like '%{txt}%' OR contact_email Like '%{txt}%' OR phone Like '%{txt}%'"; }
 
-            dbhelper.LoadDataToDGV(dataGridView1, query);
+            dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize);
         }
 
         private void button8_Click(object sender, EventArgs e)
@@ -385,7 +388,7 @@ namespace curse
             query = viewsalesquery + viewsalesqueryend;
             table = "sales";
             id_string = "sale_id";
-            dbhelper.LoadDataToDGV(dataGridView1, query);
+            dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize);
 
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
@@ -585,7 +588,7 @@ namespace curse
             query = viewsalesquery + viewsalesqueryend;
             table = "sales";
             id_string = "sale_id";
-            dbhelper.LoadDataToDGV(dataGridView1, query);
+            dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize);
 
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
@@ -602,7 +605,7 @@ namespace curse
             table = "products";
             id_string = "product_id";
 
-            dbhelper.LoadDataToDGV(dataGridView1, query);
+            dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize);
 
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridView1.Columns[0].Visible = false;
@@ -618,7 +621,7 @@ namespace curse
 
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
-            dbhelper.LoadDataToDGV(dataGridView1, query);
+            dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize);
             dataGridView1.Columns[0].Visible = false;
             textBox1.Text = "";
         }
@@ -628,7 +631,7 @@ namespace curse
             query = viewcategoriesquery;
             table = "categories";
             id_string = "category_id";
-            dbhelper.LoadDataToDGV(dataGridView1, query);
+            dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize);
 
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridView1.Columns[0].Visible = false;
@@ -645,7 +648,7 @@ namespace curse
 
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
-            dbhelper.LoadDataToDGV(dataGridView1, query);
+            dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize);
             textBox1.Text = "";
             dataGridView1.Columns[0].Visible = false;
         }

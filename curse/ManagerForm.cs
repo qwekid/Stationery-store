@@ -5,7 +5,9 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -17,6 +19,9 @@ namespace curse
 
         private static string table = string.Empty;
         private static string id_string = string.Empty;
+
+        private static int pageSize = 5;
+        private static int pageNumber = 1;
 
 
         private static readonly string viewproductsquery = "SELECT p.product_id, p.product_name AS 'Наименование товара', c.category_name AS 'Категория', s.supplier_name AS 'Поставщик', p.price AS 'Цена', p.stock AS 'Остаток на складе' FROM products p JOIN categories c ON p.category_id = c.category_id JOIN suppliers s ON p.supplier_id = s.supplier_id";
@@ -35,19 +40,21 @@ namespace curse
         private void button2_Click(object sender, EventArgs e)
         {
             query = "SELECT p.product_name AS 'Наименование товара', c.category_name AS 'Категория', s.supplier_name AS 'Поставщик', p.price AS 'Цена', p.stock AS 'Остаток на складе' FROM products p JOIN categories c ON p.category_id = c.category_id JOIN suppliers s ON p.supplier_id = s.supplier_id;";
-            dbhelper.LoadDataToDGV(dataGridView1, query);
+            dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize);
         }
 
         private void ManagerForm_Load(object sender, EventArgs e)
         {
+
+
             comboBox1.Items.Clear();
             switch (table)
             {
                 case "sales":
-                    loadSales();
+                    loadSales(sender, e);
                     break;
                 case "products":
-                    loadProducts();
+                    loadProducts(sender, e);
                     break;
             }
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
@@ -60,13 +67,13 @@ namespace curse
 
         private void button8_Click(object sender, EventArgs e)
         {
-            dbhelper.LoadDataToDGV(dataGridView1, query);
+            dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize);
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
             query = "SELECT \r\n    u.username AS 'Продавец',\r\n    GROUP_CONCAT(CONCAT(p.product_name, ': ', c.quantity, ' шт.') SEPARATOR '; ') AS 'Товары',\r\n    s.sale_date AS 'Дата продажи',\r\n    s.total_amount AS 'Финальная стоимость' \r\nFROM \r\n    `check` c \r\n \r\nJOIN \r\n    sales s ON c.sales_sale_id = s.sale_id\r\nJOIN \r\n    products p ON c.products_product_id = p.product_id \r\nJOIN \r\n    users u ON s.user_id = u.user_id\r\nGROUP BY \r\n    s.sale_id, u.username, s.sale_date, s.total_amount\r\n";
-            dbhelper.LoadDataToDGV(dataGridView1, query);
+            dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize);
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -143,7 +150,7 @@ namespace curse
             else if (table == "sales") { query = viewsalesquery + $" WHERE \r\n    u.username LIKE '%{txt}%' \r\n    OR p.product_name LIKE '%{txt}%' \r\n    OR c.quantity LIKE '%{txt}%' \r\n    OR s.sale_date LIKE '%{txt}%' \r\n    OR s.total_amount LIKE '%{txt}%'" + viewsalesqueryend; }
             else if (table == "suppliers") { query = $"SELECT supplier_name as 'Наименование компании', contact_email as 'Электронная почта', phone as 'Контактный телефон' FROM suppliers Where supplier_name Like '%{txt}%' OR contact_email Like '%{txt}%' OR phone Like '%{txt}%'"; }
 
-            dbhelper.LoadDataToDGV(dataGridView1, query);
+            dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize);
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -213,7 +220,7 @@ namespace curse
             query = viewsalesquery + viewsalesqueryend;
             table = "sales";
             id_string = "sale_id";
-            dbhelper.LoadDataToDGV(dataGridView1, query);
+            dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize);
 
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
@@ -233,7 +240,7 @@ namespace curse
             table = "products";
             id_string = "product_id";
 
-            dbhelper.LoadDataToDGV(dataGridView1, query);
+            dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize);
 
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridView1.Columns[0].Visible = false;
@@ -283,7 +290,7 @@ namespace curse
             this.DialogResult = DialogResult.OK;
         }
 
-        private void loadSales()
+        private void loadSales(object sender, EventArgs e)
         {
             comboBox1.Items.Add("По продавцу");
             comboBox1.Items.Add("По сумме");
@@ -291,14 +298,16 @@ namespace curse
             query = viewsalesquery + viewsalesqueryend;
             table = "sales";
             id_string = "sale_id";
-            dbhelper.LoadDataToDGV(dataGridView1, query);
+            dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize);
 
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
             textBox1.Text = "";
+
+            paginate(sender, e);
         }
 
-        private void loadProducts()
+        private void loadProducts(object sender, EventArgs e)
         {
             comboBox1.Items.Add("По наименованию");
             comboBox1.Items.Add("по категории");
@@ -309,11 +318,63 @@ namespace curse
             table = "products";
             id_string = "product_id";
 
-            dbhelper.LoadDataToDGV(dataGridView1, query);
+            dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber,  pageSize);
 
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridView1.Columns[0].Visible = false;
             textBox1.Text = "";
+
+            paginate(sender, e);
         }
+
+        private void paginate(object sender, EventArgs e)
+        {
+
+            var oldflowPanel = tableLayoutPanel2.Controls.OfType<FlowLayoutPanel>()
+                             .FirstOrDefault(flp => flp.Name == "flp1");
+
+            if (oldflowPanel != null)
+            {
+                tableLayoutPanel2.Controls.Remove(oldflowPanel);
+                oldflowPanel.Dispose();
+            }
+                FlowLayoutPanel flowPanel = new FlowLayoutPanel();
+                flowPanel.Name = "flp1";
+                flowPanel.Dock = DockStyle.Fill;
+                tableLayoutPanel2.Controls.Add(flowPanel, 0, 3);
+
+                int buttonsCount = dbhelper.maxPage;
+                for (int i = 0; i < buttonsCount; i++)
+                {
+                    Button button = new Button();
+                    button.Text = (i + 1).ToString();
+                    button.Click += pageButtonClick;
+                    button.Name = i.ToString() + "_paginateBtn";
+                    flowPanel.Controls.Add(button);
+                }
+            
+        }
+        private void pageButtonClick(object sender, EventArgs e)
+        {
+            Button button = sender as Button;
+            Match match = Regex.Match(button.Name, @"\d+");
+            if (match.Success)
+            {
+                pageNumber = int.Parse(match.Value) +1;
+            }
+
+            comboBox1.Items.Clear();
+            switch (table)
+            {
+                case "sales":
+                    loadSales(sender, e);
+                    break;
+                case "products":
+                    loadProducts(sender, e);
+                    break;
+            }
+            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+        }
+        
     }
 }

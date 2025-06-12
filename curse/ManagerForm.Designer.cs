@@ -210,20 +210,22 @@ namespace curse
             this.tableLayoutPanel3.Controls.Add(this.button11, 0, 0);
             this.tableLayoutPanel3.Controls.Add(this.button15, 1, 0);
             this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel3.Location = new System.Drawing.Point(550, 33);
+            this.tableLayoutPanel3.Location = new System.Drawing.Point(547, 33);
+            this.tableLayoutPanel3.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
             this.tableLayoutPanel3.RowCount = 1;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(263, 54);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(269, 57);
             this.tableLayoutPanel3.TabIndex = 24;
             // 
             // button11
             // 
             this.button11.Dock = System.Windows.Forms.DockStyle.Fill;
             this.button11.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button11.Location = new System.Drawing.Point(3, 3);
+            this.button11.Location = new System.Drawing.Point(0, 3);
+            this.button11.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
             this.button11.Name = "button11";
-            this.button11.Size = new System.Drawing.Size(125, 48);
+            this.button11.Size = new System.Drawing.Size(134, 54);
             this.button11.TabIndex = 15;
             this.button11.Text = "По возрастанию";
             this.button11.UseVisualStyleBackColor = true;
@@ -233,8 +235,9 @@ namespace curse
             this.button15.Dock = System.Windows.Forms.DockStyle.Fill;
             this.button15.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button15.Location = new System.Drawing.Point(134, 3);
+            this.button15.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
             this.button15.Name = "button15";
-            this.button15.Size = new System.Drawing.Size(126, 48);
+            this.button15.Size = new System.Drawing.Size(135, 54);
             this.button15.TabIndex = 13;
             this.button15.Text = "По убыванию";
             this.button15.UseVisualStyleBackColor = true;

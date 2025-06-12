@@ -11,14 +11,16 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Collections;
 using System.Diagnostics;
 using System.IO;
+using Microsoft.Office.Interop.Word;
+using System.Drawing.Printing;
 
 namespace curse
 {
     public class dbhelper
     {
-        public static int maxTC = 0;
+        public static int maxPage;
         private static string connectionString = "server=localhost;user=root;database=officesupplies;password=root;";
-        static public void LoadDataToDGV(DataGridView dataGridView, string query)
+        static public void LoadDataToDGV(DataGridView dataGridView, string query, int pageNumber, int pageSize)
         {
             using (MySqlConnection con = new MySqlConnection())
             {
@@ -29,15 +31,25 @@ namespace curse
                 cmd.ExecuteNonQuery();
 
                 MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                DataTable dt = new DataTable();
+                System.Data.DataTable dt = new System.Data.DataTable();
 
                 da.Fill(dt);
+                dt = paginate(dt, pageNumber, pageSize);
                 dataGridView.DataSource = dt;
                 con.Close();
             }
         }
 
-        
+        private static System.Data.DataTable paginate(System.Data.DataTable dt,int pageNumber,int pageSize)
+        {
+            int totalRows = dt.Rows.Count;
+            maxPage = (int)Math.Ceiling((double)totalRows / pageSize);
+            return dt.AsEnumerable()
+                 .Skip((pageNumber - 1) * pageSize)
+                 .Take(pageSize)
+                 .CopyToDataTable();
+           
+        }
 
         static public int CheckUserRole(string login, string password)
         {
@@ -50,7 +62,7 @@ namespace curse
 
                 MySqlCommand cmd = new MySqlCommand($"Select * From users Where username = '{login}'", con);
                 MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                DataTable dt = new DataTable();
+                System.Data.DataTable dt = new System.Data.DataTable();
                 da.Fill(dt);
 
                 if (Hasher.VerifyPassword(password, dt.Rows[0].ItemArray.GetValue(3).ToString()))
@@ -77,7 +89,7 @@ namespace curse
             catch(IndexOutOfRangeException) { return 0; }
         }
 
-        static public void LoadDataToDt(DataTable dt, string query)
+        static public void LoadDataToDt(System.Data.DataTable dt, string query)
         {
             using (MySqlConnection con = new MySqlConnection())
             {
@@ -120,7 +132,7 @@ namespace curse
                 cmd.ExecuteNonQuery();
 
                 MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                DataTable dt = new DataTable();
+                System.Data.DataTable dt = new System.Data.DataTable();
 
                 da.Fill(dt);
 
