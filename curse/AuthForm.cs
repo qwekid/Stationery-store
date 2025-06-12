@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Linq;
@@ -23,36 +22,24 @@ namespace curse
             string login = textBox1.Text;
             string password = textBox2.Text;
 
-            if (login == LocalAdminAccount.Username && password ==LocalAdminAccount.Password)
+            string hashedPassword = Hasher.HashPassword(password);
+
+            int role = dbhelper.CheckUserRole(login, password);
+
+            if (role == 2)
             {
-                LocalAdminForm laf = new LocalAdminForm();
-                if (laf.ShowDialog() == DialogResult.OK)
-                {
-                    textBox1.Clear();
-                    textBox2.Clear();
-                    this.AuthForm_Load(sender, e);
-                }
-                
+                MainAdminForm a = new MainAdminForm();
+                a.Show();
+                this.Hide();
             }
-            else
+            else if (role == 1)
             {
-                int role = dbhelper.CheckUserRole(login, password);
-                if (role == 2)
-                {
-                    AdminForm a = new AdminForm();
-                    a.Show();
-                    this.Hide();
-                }
-                else if (role == 1)
-                {
-                    ManagerForm a = new ManagerForm();
-                    a.Show();
-                    this.Hide();
-                }
-                else
-                {
-                    MessageBox.Show("Неверный логин или пароль!");
-                }
+                MainManagerForm a = new MainManagerForm();
+                a.Show();
+                this.Hide();
+            }
+            else {
+                MessageBox.Show("Неверный логин или пароль!");
             }
         }
 

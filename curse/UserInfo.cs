@@ -14,10 +14,4 @@ namespace curse
         public static string password;
         public static int role;
     }
-
-    public static class LocalAdminAccount
-    {
-        public static readonly string Username = "ladmin";
-        public static readonly string Password = "ladmin";
-    }
 }

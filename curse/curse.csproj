@@ -33,12 +33,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Office.Interop.Word, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Office.Interop.Word.15.0.4797.1004\lib\net20\Microsoft.Office.Interop.Word.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="MySql.Data, Version=9.0.0.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Program Files (x86)\MySQL\MySQL Connector NET 9.0\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -94,11 +97,18 @@
       <DependentUpon>CreateUser.cs</DependentUpon>
     </Compile>
     <Compile Include="dbhelper.cs" />
-    <Compile Include="LocalAdminForm.cs">
+    <Compile Include="Hasher.cs" />
+    <Compile Include="MainAdminForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="LocalAdminForm.Designer.cs">
-      <DependentUpon>LocalAdminForm.cs</DependentUpon>
+    <Compile Include="MainAdminForm.Designer.cs">
+      <DependentUpon>MainAdminForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainManagerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainManagerForm.Designer.cs">
+      <DependentUpon>MainManagerForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ManagerForm.cs">
       <SubType>Form</SubType>
@@ -136,11 +146,11 @@
     <EmbeddedResource Include="CreateUser.resx">
       <DependentUpon>CreateUser.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="LocalAdminForm.aa.resx">
-      <DependentUpon>LocalAdminForm.cs</DependentUpon>
+    <EmbeddedResource Include="MainAdminForm.resx">
+      <DependentUpon>MainAdminForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="LocalAdminForm.resx">
-      <DependentUpon>LocalAdminForm.cs</DependentUpon>
+    <EmbeddedResource Include="MainManagerForm.resx">
+      <DependentUpon>MainManagerForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ManagerForm.resx">
       <DependentUpon>ManagerForm.cs</DependentUpon>
@@ -157,6 +167,7 @@
     <EmbeddedResource Include="ReportForm.resx">
       <DependentUpon>ReportForm.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -169,6 +180,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="dumps\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

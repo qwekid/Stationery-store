@@ -9,15 +9,18 @@ using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Collections;
+using System.Diagnostics;
 using System.IO;
+using Microsoft.Office.Interop.Word;
+using System.Drawing.Printing;
 
 namespace curse
 {
     public class dbhelper
     {
-        public static int maxTC = 0;
+        public static int maxPage;
         private static string connectionString = "server=localhost;user=root;database=officesupplies;password=root;";
-        static public void LoadDataToDGV(DataGridView dataGridView, string query)
+        static public void LoadDataToDGV(DataGridView dataGridView, string query, int pageNumber, int pageSize)
         {
             using (MySqlConnection con = new MySqlConnection())
             {
@@ -28,15 +31,29 @@ namespace curse
                 cmd.ExecuteNonQuery();
 
                 MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                DataTable dt = new DataTable();
+                System.Data.DataTable dt = new System.Data.DataTable();
 
                 da.Fill(dt);
+                dt = paginate(dt, pageNumber, pageSize);
                 dataGridView.DataSource = dt;
                 con.Close();
             }
         }
 
-        
+        private static System.Data.DataTable paginate(System.Data.DataTable dt,int pageNumber,int pageSize)
+        {
+            try
+            {
+                int totalRows = dt.Rows.Count;
+                maxPage = (int)Math.Ceiling((double)totalRows / pageSize);
+                return dt.AsEnumerable()
+                     .Skip((pageNumber - 1) * pageSize)
+                     .Take(pageSize)
+                     .CopyToDataTable();
+            }
+            catch (Exception) { return dt; }
+           
+        }
 
         static public int CheckUserRole(string login, string password)
         {
@@ -49,10 +66,10 @@ namespace curse
 
                 MySqlCommand cmd = new MySqlCommand($"Select * From users Where username = '{login}'", con);
                 MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                DataTable dt = new DataTable();
+                System.Data.DataTable dt = new System.Data.DataTable();
                 da.Fill(dt);
 
-                if (password == dt.Rows[0].ItemArray.GetValue(3).ToString())
+                if (Hasher.VerifyPassword(password, dt.Rows[0].ItemArray.GetValue(3).ToString()))
                 {
                     if (Convert.ToInt32(dt.Rows[0].ItemArray.GetValue(4)) == 2)
                     {
@@ -76,7 +93,7 @@ namespace curse
             catch(IndexOutOfRangeException) { return 0; }
         }
 
-        static public void LoadDataToDt(DataTable dt, string query)
+        static public void LoadDataToDt(System.Data.DataTable dt, string query)
         {
             using (MySqlConnection con = new MySqlConnection())
             {
@@ -119,7 +136,7 @@ namespace curse
                 cmd.ExecuteNonQuery();
 
                 MySqlDataAdapter da = new MySqlDataAdapter(cmd);
-                DataTable dt = new DataTable();
+                System.Data.DataTable dt = new System.Data.DataTable();
 
                 da.Fill(dt);
 
@@ -147,58 +164,95 @@ namespace curse
             }
         }
 
-        public static void ImportData(string filePath, string tablename)
+        /// <summary>
+        /// Создает дамп базы данных MySQL
+        /// </summary>
+        /// <returns>True если успешно, False в случае ошибки</returns>
+        public static bool CreateDump(string selectedPath)
         {
-            using (SqlConnection connection = new SqlConnection())
+            string server = "localhost";
+            string database = "officesupplies";
+            string userId = "root";
+            string password = "root";
+            string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+            string dumpDirPath = selectedPath;
+            string outputFile = Path.Combine(dumpDirPath, $"db_dump_{timestamp}.sql");
+            try
             {
-                connection.ConnectionString = connectionString;
-                connection.Open();
+                string mysqldumpPath = FindMysqldumpPath();
 
-                using (StreamReader sr = new StreamReader(filePath))
+                if (string.IsNullOrEmpty(mysqldumpPath))
                 {
-                    string line;
-                    while ((line = sr.ReadLine()) != null)
+                    throw new Exception("mysqldump не найден. Убедитесь, что MySQL Server установлен.");
+                }
+                Directory.CreateDirectory(Path.GetDirectoryName(outputFile));
+
+                string arguments = $"--host={server} --user={userId} --password={password} " +
+                                   $"--opt --routines --triggers --events --single-transaction " +
+                                   $"--result-file=\"{outputFile}\" {database}";
+
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    FileName = mysqldumpPath,
+                    Arguments = arguments,
+                    UseShellExecute = false,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true
+                };
+
+                using (Process process = Process.Start(startInfo))
+                {
+                    string error = process.StandardError.ReadToEnd();
+                    process.WaitForExit();
+
+                    if (process.ExitCode != 0)
                     {
-                        // Предполагается, что данные разделены запятыми
-                        var values = line.Split(',');
-
-                        string query = string.Empty;
-
-                        switch (tablename)
-                        {
-                            case "categories":
-                                query = $"INSERT INTO '{tablename}' (category_id, category_name, description) VALUES ({values[0]}, {values[1]}, {values[2]})";
-                                break;
-                            case "check":
-                                query = $"INSERT INTO '{tablename}' (products_product_id, sales_sale_id, quantity) VALUES ({values[0]}, {values[1]}, {values[2]})";
-                                break;
-                            case "products":
-                                query = $"INSERT INTO '{tablename}' (product_id, product_name, category_id, supplier_id, price, stock) VALUES ({values[0]}, {values[1]}, {values[2]}, {values[3]}, {values[4]}, {values[5]})";
-                                break;
-                            case "roles":
-                                query = $"INSERT INTO '{tablename}' (id, role_name) VALUES ({values[0]}, {values[1]})";
-                                break;
-                            case "sales":
-                                query = $"INSERT INTO '{tablename}' (sale_id, user_id, sale_date, total_amount, check_check_id) VALUES ({values[0]}, {values[1]}, {values[2]}, {values[3]}, {values[4]})";
-                                break;
-                            case "suppliers":
-                                query = $"INSERT INTO '{tablename}' (supplier_id, supplier_name, contact_email, phone) VALUES ({values[0]}, {values[1]}, {values[2]}, {values[3]})";
-                                break;
-                            case "users":
-                                query = $"INSERT INTO '{tablename}' (user_id, username, email, password, role) VALUES ({values[0]}, {values[1]}, {values[2]}, {values[3]}, {values[4]})";
-                                break;
-
-                        }
-                        
-
-                        using (SqlCommand command = new SqlCommand(query, connection))
-                        {
-                            command.ExecuteNonQuery();
-                        }
+                        throw new Exception($"Ошибка при создании дампа: {error}");
                     }
                 }
-                MessageBox.Show("Данные успешно импортированы.");
+
+                return true;
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Пытается найти путь к mysqldump.exe
+        /// </summary>
+        private static string FindMysqldumpPath()
+        {
+            string[] possiblePaths =
+            {
+            @"C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqldump.exe",
+            @"C:\Program Files\MySQL\MySQL Server 5.7\bin\mysqldump.exe",
+            @"C:\Program Files (x86)\MySQL\MySQL Server 5.6\bin\mysqldump.exe",
+            @"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysqldump.exe"
+        };
+
+            foreach (string path in possiblePaths)
+            {
+                if (File.Exists(path))
+                {
+                    return path;
+                }
+            }
+
+            string pathVariable = Environment.GetEnvironmentVariable("PATH");
+            foreach (string path in pathVariable.Split(';'))
+            {
+                string fullPath = Path.Combine(path, "mysqldump.exe");
+                if (File.Exists(fullPath))
+                {
+                    return fullPath;
+                }
+            }
+
+            return null;
         }
     }
 }
+

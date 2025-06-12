@@ -15,12 +15,33 @@ namespace curse
 
         private static string query = string.Empty;
 
+        private static bool isRedact;
+        private static int Id;
 
         public CreateUser()
         {
             InitializeComponent();
             this.ControlBox = false;
+            isRedact = false;
+            button12.Text = "Добавить запись";
         }
+
+        public CreateUser(int id):this()
+        {
+            isRedact = true;
+            Id = id;
+
+            DataTable dt = new DataTable();
+            query = $"SELECT * FROM officesupplies.users where user_id = {Id};";
+            dbhelper.LoadDataToDt(dt, query);
+            
+            textBox1.Text = dt.Rows[0].ItemArray[1].ToString();
+            textBox2.Text = dt.Rows[0].ItemArray[2].ToString();
+            textBox3.Text = dt.Rows[0].ItemArray[3].ToString();
+            comboBox1.SelectedIndex = Convert.ToInt32(dt.Rows[0].ItemArray[4].ToString()) -1;
+            button12.Text = "Редактировать запись";
+        }
+
 
         private void CreateUser_Load(object sender, EventArgs e)
         {
@@ -34,19 +55,45 @@ namespace curse
 
         private void button12_Click(object sender, EventArgs e)
         {
-            if (textBox1.Text != "" && textBox2.Text != "" && textBox3.Text != "" && comboBox1.SelectedIndex != -1)
+            if (!isRedact)
             {
-                query = $"INSERT INTO `officesupplies`.`users` (`username`, `email`, `password`, `role`) VALUES ('{textBox1.Text}', '{textBox2.Text}', '{textBox3.Text}', '{comboBox1.SelectedIndex + 1}');";
-                dbhelper.InsertDataOnDb(query);
-                MessageBox.Show("Запись успешно добавлена");
+                if (textBox1.Text != "" && textBox2.Text != "" && textBox3.Text != "" && comboBox1.SelectedIndex != -1)
+                {
+                    query = $"INSERT INTO `officesupplies`.`users` (`username`, `email`, `password`, `role`) VALUES ('{textBox1.Text}', '{textBox2.Text}', '{Hasher.HashPassword(textBox3.Text)}', '{comboBox1.SelectedIndex + 1}');";
+                    dbhelper.InsertDataOnDb(query);
+                    MessageBox.Show("Запись успешно добавлена");
 
-                textBox1.Clear();
-                textBox2.Clear();
-                textBox3.Clear();
-                comboBox1.SelectedIndex = -1;
+                    textBox1.Clear();
+                    textBox2.Clear();
+                    textBox3.Clear();
+                    comboBox1.SelectedIndex = -1;
+                }
+                else
+                {
+                    MessageBox.Show("Сначала заполните все данные о пользователе");
+                }
             }
             else {
-                MessageBox.Show("Сначала заполните все данные о пользователе");
+                if (textBox1.Text != "" && textBox2.Text != "" && textBox3.Text != "" && comboBox1.SelectedIndex != -1)
+                {
+                    string name = textBox1.Text;
+                    string mail = textBox2.Text;
+                    string password = textBox3.Text;
+                    int role = comboBox1.SelectedIndex + 1;
+
+                    query = $"UPDATE `officesupplies`.`users` SET `username` = '{name}', `email` = '{mail}', `password` = '{Hasher.HashPassword(password)}', `role` = '{role}' WHERE (`user_id` = '{Id}');;";
+                    dbhelper.InsertDataOnDb(query);
+                    MessageBox.Show("Запись успешно добавлена");
+
+                    textBox1.Clear();
+                    textBox2.Clear();
+                    textBox3.Clear();
+                    comboBox1.SelectedIndex = -1;
+                }
+                else
+                {
+                    MessageBox.Show("Сначала заполните все данные о пользователе");
+                }
             }
             
         }
