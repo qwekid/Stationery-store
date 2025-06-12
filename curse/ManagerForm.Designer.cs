@@ -229,6 +229,7 @@ namespace curse
             this.button11.TabIndex = 15;
             this.button11.Text = "По возрастанию";
             this.button11.UseVisualStyleBackColor = true;
+            this.button11.Click += new System.EventHandler(this.button11_Click);
             // 
             // button15
             // 
@@ -241,6 +242,7 @@ namespace curse
             this.button15.TabIndex = 13;
             this.button15.Text = "По убыванию";
             this.button15.UseVisualStyleBackColor = true;
+            this.button15.Click += new System.EventHandler(this.button15_Click);
             // 
             // ManagerForm
             // 

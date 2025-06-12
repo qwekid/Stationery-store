@@ -58,6 +58,7 @@ namespace curse
                     break;
             }
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllHeaders;
         }
 
         private void button7_Click(object sender, EventArgs e)
@@ -350,6 +351,9 @@ namespace curse
                     button.Text = (i + 1).ToString();
                     button.Click += pageButtonClick;
                     button.Name = i.ToString() + "_paginateBtn";
+                    button.Height = flowPanel.Height -8;
+                    button.Width = flowPanel.Height -8;
+                    button.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
                     flowPanel.Controls.Add(button);
                 }
             
@@ -363,18 +367,7 @@ namespace curse
                 pageNumber = int.Parse(match.Value) +1;
             }
 
-            comboBox1.Items.Clear();
-            switch (table)
-            {
-                case "sales":
-                    loadSales(sender, e);
-                    break;
-                case "products":
-                    loadProducts(sender, e);
-                    break;
-            }
-            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            this.ManagerForm_Load(sender, e);
         }
-        
     }
 }

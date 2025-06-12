@@ -42,12 +42,16 @@ namespace curse
 
         private static System.Data.DataTable paginate(System.Data.DataTable dt,int pageNumber,int pageSize)
         {
-            int totalRows = dt.Rows.Count;
-            maxPage = (int)Math.Ceiling((double)totalRows / pageSize);
-            return dt.AsEnumerable()
-                 .Skip((pageNumber - 1) * pageSize)
-                 .Take(pageSize)
-                 .CopyToDataTable();
+            try
+            {
+                int totalRows = dt.Rows.Count;
+                maxPage = (int)Math.Ceiling((double)totalRows / pageSize);
+                return dt.AsEnumerable()
+                     .Skip((pageNumber - 1) * pageSize)
+                     .Take(pageSize)
+                     .CopyToDataTable();
+            }
+            catch (Exception) { return dt; }
            
         }
 
