@@ -66,9 +66,9 @@ namespace curse
             // 
             this.textBox1.BackColor = System.Drawing.SystemColors.Control;
             this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBox1.Location = new System.Drawing.Point(0, 30);
+            this.textBox1.Location = new System.Drawing.Point(0, 61);
             this.textBox1.Margin = new System.Windows.Forms.Padding(0);
             this.textBox1.MaxLength = 200;
             this.textBox1.Name = "textBox1";

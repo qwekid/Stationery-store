@@ -35,11 +35,12 @@ namespace curse
         private static readonly string viewusersquery = "SELECT user_id, username as 'Логин', email as 'Почта', password as 'Пароль', r.role_name as 'Роль' FROM users u JOIN roles r ON u.role = r.id";
         private static readonly string viewsalesquery = "SELECT \r\n u.username AS \"Продавец\", \r\n    GROUP_CONCAT(CONCAT(p.product_name, ': ', c.quantity, ' шт.') SEPARATOR '; ') AS \"Товары\", \r\n    s.sale_date AS \"Дата продажи\", \r\n    s.total_amount AS \"Финальная стоимость\" \r\nFROM \r\n    `check` c \r\nJOIN \r\n    sales s ON c.sales_sale_id = s.sale_id \r\nJOIN  \r\n    products p ON c.products_product_id = p.product_id \r\nJOIN \r\n    users u ON s.user_id = u.user_id ";
         private static readonly string viewsalesqueryend = "GROUP BY \r\n s.sale_id, u.username, s.sale_date, s.total_amount";
-        private ContextMenuStrip contextMenuStrip;
+        private static ContextMenuStrip contextMenuStrip = new ContextMenuStrip();
         public AdminForm(string tableName)
         {
             table = tableName;
             InitializeComponent();
+
         }
 
         private void load(object sender, EventArgs e) {
