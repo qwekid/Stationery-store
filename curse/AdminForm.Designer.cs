@@ -66,12 +66,13 @@ namespace curse
             // 
             this.textBox1.BackColor = System.Drawing.SystemColors.Control;
             this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBox1.Location = new System.Drawing.Point(3, 58);
+            this.textBox1.Location = new System.Drawing.Point(0, 30);
+            this.textBox1.Margin = new System.Windows.Forms.Padding(0);
             this.textBox1.MaxLength = 200;
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(524, 29);
+            this.textBox1.Size = new System.Drawing.Size(530, 29);
             this.textBox1.TabIndex = 12;
             this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
@@ -85,9 +86,10 @@ namespace curse
             this.comboBox1.Items.AddRange(new object[] {
             "По цене",
             "По алфавиту"});
-            this.comboBox1.Location = new System.Drawing.Point(533, 3);
+            this.comboBox1.Location = new System.Drawing.Point(530, 0);
+            this.comboBox1.Margin = new System.Windows.Forms.Padding(0);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(263, 32);
+            this.comboBox1.Size = new System.Drawing.Size(269, 32);
             this.comboBox1.TabIndex = 18;
             this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
@@ -103,7 +105,7 @@ namespace curse
             this.tableLayoutPanel2.SetRowSpan(this.button4, 2);
             this.button4.Size = new System.Drawing.Size(263, 84);
             this.button4.TabIndex = 19;
-            this.button4.Text = "Выход";
+            this.button4.Text = "Назад";
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
@@ -155,20 +157,22 @@ namespace curse
             this.tableLayoutPanel3.Controls.Add(this.button11, 0, 0);
             this.tableLayoutPanel3.Controls.Add(this.button10, 1, 0);
             this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel3.Location = new System.Drawing.Point(533, 33);
+            this.tableLayoutPanel3.Location = new System.Drawing.Point(530, 30);
+            this.tableLayoutPanel3.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
             this.tableLayoutPanel3.RowCount = 1;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(263, 54);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(269, 60);
             this.tableLayoutPanel3.TabIndex = 24;
             // 
             // button11
             // 
             this.button11.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.button11.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button11.Location = new System.Drawing.Point(3, 3);
+            this.button11.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button11.Location = new System.Drawing.Point(0, 3);
+            this.button11.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
             this.button11.Name = "button11";
-            this.button11.Size = new System.Drawing.Size(125, 48);
+            this.button11.Size = new System.Drawing.Size(134, 57);
             this.button11.TabIndex = 14;
             this.button11.Text = "По возрастанию";
             this.button11.UseVisualStyleBackColor = true;
@@ -177,10 +181,11 @@ namespace curse
             // button10
             // 
             this.button10.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.button10.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button10.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button10.Location = new System.Drawing.Point(134, 3);
+            this.button10.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
             this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(126, 48);
+            this.button10.Size = new System.Drawing.Size(135, 57);
             this.button10.TabIndex = 13;
             this.button10.Text = "По убыванию";
             this.button10.UseVisualStyleBackColor = true;

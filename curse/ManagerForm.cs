@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Office.Interop.Word;
 
 namespace curse
 {
@@ -43,10 +44,7 @@ namespace curse
             dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize);
         }
 
-        private void ManagerForm_Load(object sender, EventArgs e)
-        {
-
-
+        private void load(object sender, EventArgs e) {
             comboBox1.Items.Clear();
             switch (table)
             {
@@ -59,6 +57,12 @@ namespace curse
             }
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllHeaders;
+        }
+
+        private void ManagerForm_Load(object sender, EventArgs e)
+        {
+            load(sender,e);
+            paginate(sender, e);
         }
 
         private void button7_Click(object sender, EventArgs e)
@@ -79,7 +83,7 @@ namespace curse
 
         private void button4_Click(object sender, EventArgs e)
         {
-            Application.Exit();
+            System.Windows.Forms.Application.Exit();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -304,8 +308,6 @@ namespace curse
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
             textBox1.Text = "";
-
-            paginate(sender, e);
         }
 
         private void loadProducts(object sender, EventArgs e)
@@ -325,7 +327,7 @@ namespace curse
             dataGridView1.Columns[0].Visible = false;
             textBox1.Text = "";
 
-            paginate(sender, e);
+            
         }
 
         private void paginate(object sender, EventArgs e)
@@ -339,24 +341,43 @@ namespace curse
                 tableLayoutPanel2.Controls.Remove(oldflowPanel);
                 oldflowPanel.Dispose();
             }
-                FlowLayoutPanel flowPanel = new FlowLayoutPanel();
-                flowPanel.Name = "flp1";
-                flowPanel.Dock = DockStyle.Fill;
-                tableLayoutPanel2.Controls.Add(flowPanel, 0, 3);
 
-                int buttonsCount = dbhelper.maxPage;
-                for (int i = 0; i < buttonsCount; i++)
-                {
-                    Button button = new Button();
-                    button.Text = (i + 1).ToString();
-                    button.Click += pageButtonClick;
-                    button.Name = i.ToString() + "_paginateBtn";
-                    button.Height = flowPanel.Height -8;
-                    button.Width = flowPanel.Height -8;
-                    button.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-                    flowPanel.Controls.Add(button);
-                }
-            
+            FlowLayoutPanel flowPanel = new FlowLayoutPanel();
+            flowPanel.Name = "flp1";
+            flowPanel.Dock = DockStyle.Fill;
+            tableLayoutPanel2.Controls.Add(flowPanel, 0, 3);
+                
+            Button decrBut = new Button();
+            decrBut.Text = "<<";
+            decrBut.Height = flowPanel.Height - 8;
+            decrBut.Width = flowPanel.Height * 2 - 8;
+            decrBut.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            decrBut.Click += decrButtonClick;
+            flowPanel.Controls.Add(decrBut);
+
+            int buttonsCount = dbhelper.maxPage;
+
+            for (int i = 0; i < buttonsCount; i++)
+            {
+                Button button = new Button();
+                button.Text = (i + 1).ToString();
+                button.Click += pageButtonClick;
+                button.Name = i.ToString() + "_paginateBtn";
+                button.Height = flowPanel.Height -8;
+                button.Width = flowPanel.Height -8;
+                button.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+                 
+                flowPanel.Controls.Add(button);
+            }
+
+            Button implBut = new Button();
+            implBut.Text = ">>";
+            implBut.Height = flowPanel.Height - 8;
+            implBut.Width = flowPanel.Height*2 - 8;
+            implBut.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            implBut.Click += implButtonClick;
+            flowPanel.Controls.Add(implBut);
+
         }
         private void pageButtonClick(object sender, EventArgs e)
         {
@@ -367,7 +388,32 @@ namespace curse
                 pageNumber = int.Parse(match.Value) +1;
             }
 
-            this.ManagerForm_Load(sender, e);
+            load(sender, e);
+        }
+
+        private void decrButtonClick(object sender, EventArgs e)
+        {
+            if(pageNumber-1 != 0) 
+            { 
+                pageNumber--; 
+            }
+            else{
+                MessageBox.Show("Вы достигли лимита страниц!", "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            load(sender, e);
+        }
+
+        private void implButtonClick(object sender, EventArgs e)
+        {
+            if (pageNumber + 1 <= dbhelper.maxPage)
+            {
+                pageNumber++;
+            }
+            else
+            {
+                MessageBox.Show("Вы достигли лимита страниц!", "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            load(sender, e);
         }
     }
 }

@@ -43,6 +43,7 @@ namespace curse
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.button11 = new System.Windows.Forms.Button();
             this.button15 = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
@@ -129,7 +130,7 @@ namespace curse
             this.tableLayoutPanel2.SetRowSpan(this.button16, 2);
             this.button16.Size = new System.Drawing.Size(263, 84);
             this.button16.TabIndex = 19;
-            this.button16.Text = "Выход";
+            this.button16.Text = "Назад";
             this.button16.UseVisualStyleBackColor = true;
             this.button16.Click += new System.EventHandler(this.button16_Click);
             // 
@@ -143,9 +144,10 @@ namespace curse
             this.comboBox1.Items.AddRange(new object[] {
             "По цене",
             "По алфавиту"});
-            this.comboBox1.Location = new System.Drawing.Point(550, 3);
+            this.comboBox1.Location = new System.Drawing.Point(547, 0);
+            this.comboBox1.Margin = new System.Windows.Forms.Padding(0);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(263, 32);
+            this.comboBox1.Size = new System.Drawing.Size(269, 32);
             this.comboBox1.TabIndex = 18;
             this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
@@ -155,9 +157,10 @@ namespace curse
             this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBox1.Location = new System.Drawing.Point(3, 3);
+            this.textBox1.Location = new System.Drawing.Point(0, 30);
+            this.textBox1.Margin = new System.Windows.Forms.Padding(0);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(541, 29);
+            this.textBox1.Size = new System.Drawing.Size(547, 29);
             this.textBox1.TabIndex = 12;
             this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
@@ -184,11 +187,12 @@ namespace curse
             this.tableLayoutPanel2.ColumnCount = 2;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 269F));
+            this.tableLayoutPanel2.Controls.Add(this.label1, 0, 0);
             this.tableLayoutPanel2.Controls.Add(this.tableLayoutPanel3, 1, 1);
             this.tableLayoutPanel2.Controls.Add(this.button12, 0, 4);
             this.tableLayoutPanel2.Controls.Add(this.button16, 1, 3);
             this.tableLayoutPanel2.Controls.Add(this.comboBox1, 1, 0);
-            this.tableLayoutPanel2.Controls.Add(this.textBox1, 0, 0);
+            this.tableLayoutPanel2.Controls.Add(this.textBox1, 0, 1);
             this.tableLayoutPanel2.Controls.Add(this.dataGridView1, 0, 2);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
@@ -210,22 +214,22 @@ namespace curse
             this.tableLayoutPanel3.Controls.Add(this.button11, 0, 0);
             this.tableLayoutPanel3.Controls.Add(this.button15, 1, 0);
             this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel3.Location = new System.Drawing.Point(547, 33);
-            this.tableLayoutPanel3.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
+            this.tableLayoutPanel3.Location = new System.Drawing.Point(547, 30);
+            this.tableLayoutPanel3.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
             this.tableLayoutPanel3.RowCount = 1;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(269, 57);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(269, 60);
             this.tableLayoutPanel3.TabIndex = 24;
             // 
             // button11
             // 
             this.button11.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.button11.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button11.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button11.Location = new System.Drawing.Point(0, 3);
             this.button11.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
             this.button11.Name = "button11";
-            this.button11.Size = new System.Drawing.Size(134, 54);
+            this.button11.Size = new System.Drawing.Size(134, 57);
             this.button11.TabIndex = 15;
             this.button11.Text = "По возрастанию";
             this.button11.UseVisualStyleBackColor = true;
@@ -234,15 +238,27 @@ namespace curse
             // button15
             // 
             this.button15.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.button15.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button15.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button15.Location = new System.Drawing.Point(134, 3);
             this.button15.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
             this.button15.Name = "button15";
-            this.button15.Size = new System.Drawing.Size(135, 54);
+            this.button15.Size = new System.Drawing.Size(135, 57);
             this.button15.TabIndex = 13;
             this.button15.Text = "По убыванию";
             this.button15.UseVisualStyleBackColor = true;
             this.button15.Click += new System.EventHandler(this.button15_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(3, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(541, 30);
+            this.label1.TabIndex = 26;
+            this.label1.Text = "Поиск";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             // 
             // ManagerForm
             // 
@@ -284,5 +300,6 @@ namespace curse
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
         private System.Windows.Forms.Button button11;
         private System.Windows.Forms.Button button15;
+        private System.Windows.Forms.Label label1;
     }
 }
