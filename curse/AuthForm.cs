@@ -39,7 +39,25 @@ namespace curse
                 this.Hide();
             }
             else {
-                MessageBox.Show("Неверный логин или пароль!");
+                MessageBox.Show("Неверный логин или пароль!", "Предупреждание!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Captcha captcha = new Captcha();
+                if (captcha.ShowDialog() != DialogResult.OK) 
+                {
+                    
+                    this.Enabled = false;
+
+                    
+                    System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
+                    timer.Interval = 10000; 
+                    timer.Tick += (s, end) =>
+                    {
+                        timer.Stop();
+                        timer.Dispose();
+
+                        this.Enabled = true;
+                    };
+                    timer.Start();
+                }
             }
         }
 

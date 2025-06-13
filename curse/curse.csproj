@@ -66,6 +66,12 @@
     <Compile Include="AuthForm.Designer.cs">
       <DependentUpon>AuthForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Captcha.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Captcha.Designer.cs">
+      <DependentUpon>Captcha.cs</DependentUpon>
+    </Compile>
     <Compile Include="CreateCategory.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -131,6 +137,9 @@
     <EmbeddedResource Include="AuthForm.resx">
       <DependentUpon>AuthForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Captcha.resx">
+      <DependentUpon>Captcha.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CreateCategory.resx">
       <DependentUpon>CreateCategory.cs</DependentUpon>
     </EmbeddedResource>
@@ -163,6 +172,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="ReportForm.resx">
       <DependentUpon>ReportForm.cs</DependentUpon>
@@ -183,6 +193,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="dumps\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\159061.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
