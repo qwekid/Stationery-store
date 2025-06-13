@@ -29,17 +29,53 @@ namespace curse
             if (role == 2)
             {
                 MainAdminForm a = new MainAdminForm();
-                a.Show();
                 this.Hide();
+                if (a.ShowDialog() == DialogResult.OK) 
+                {
+                    this.Show();
+
+                    textBox1.Text = "";
+                    textBox2.Text = "";
+                };
             }
             else if (role == 1)
             {
                 MainManagerForm a = new MainManagerForm();
-                a.Show();
                 this.Hide();
+                if (a.ShowDialog() == DialogResult.OK)
+                {
+                    this.Show();
+
+                    textBox1.Text = "";
+                    textBox2.Text = "";
+                };
             }
             else {
-                MessageBox.Show("Неверный логин или пароль!");
+                textBox1.Text = "";
+                textBox2.Text = "";
+
+                MessageBox.Show("Неверный логин или пароль!", "Предупреждание!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Captcha captcha = new Captcha();
+                if (captcha.ShowDialog() != DialogResult.OK) 
+                {
+                    
+                    this.Enabled = false;
+
+                    
+                    System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
+                    timer.Interval = 10000; 
+                    timer.Tick += (s, end) =>
+                    {
+                        timer.Stop();
+                        timer.Dispose();
+
+                        this.Enabled = true;
+                    };
+                    timer.Start();
+
+                    textBox1.Text = "";
+                    textBox2.Text = "";
+                }
             }
         }
 
@@ -51,7 +87,8 @@ namespace curse
 
         private void AuthForm_Load(object sender, EventArgs e)
         {
-
+            textBox1.Text = "";
+            textBox2.Text = "";
         }
     }
 }
