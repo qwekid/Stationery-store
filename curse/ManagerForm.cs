@@ -31,11 +31,47 @@ namespace curse
         private static readonly string viewsalesqueryend = "GROUP BY \r\n s.sale_id, u.username, s.sale_date, s.total_amount";
         private ContextMenuStrip contextMenuStrip;
 
+        private static bool isProgrammaticClose = false;
+
+        private Timer inactivityTimer;
+        private int inactivityLimit = 10 * 60 * 1000;
+
         public ManagerForm(string tableName)
         {
             InitializeComponent();
             table = tableName;
-            
+            this.FormClosing += FormClose;
+
+            inactivityTimer = new Timer();
+            inactivityTimer.Interval = inactivityLimit;
+            inactivityTimer.Tick += InactivityTimer_Tick;
+            inactivityTimer.Start();
+
+            this.MouseMove += ResetTimer;
+            this.KeyPress += ResetTimer;
+            this.MouseClick += ResetTimer;
+        }
+
+        private void ResetTimer(object sender, EventArgs e)
+        {
+            inactivityTimer.Stop();
+            inactivityTimer.Start();
+        }
+
+        private void InactivityTimer_Tick(object sender, EventArgs e)
+        {
+            inactivityTimer.Stop();
+            isProgrammaticClose = true;
+
+            this.Close();
+        }
+
+        private void FormClose(object sender, FormClosingEventArgs e)
+        {
+            if (isProgrammaticClose)
+            {
+                this.DialogResult = DialogResult.Abort;
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)

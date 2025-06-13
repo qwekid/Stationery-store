@@ -36,11 +36,41 @@ namespace curse
         private static readonly string viewsalesquery = "SELECT \r\n u.username AS \"Продавец\", \r\n    GROUP_CONCAT(CONCAT(p.product_name, ': ', c.quantity, ' шт.') SEPARATOR '; ') AS \"Товары\", \r\n    s.sale_date AS \"Дата продажи\", \r\n    s.total_amount AS \"Финальная стоимость\" \r\nFROM \r\n    `check` c \r\nJOIN \r\n    sales s ON c.sales_sale_id = s.sale_id \r\nJOIN  \r\n    products p ON c.products_product_id = p.product_id \r\nJOIN \r\n    users u ON s.user_id = u.user_id ";
         private static readonly string viewsalesqueryend = "GROUP BY \r\n s.sale_id, u.username, s.sale_date, s.total_amount";
         private static ContextMenuStrip contextMenuStrip = new ContextMenuStrip();
+
+        private static bool isProgrammaticClose = false;
+
+        private Timer inactivityTimer;
+        private int inactivityLimit = 10 * 60 * 1000;
+
         public AdminForm(string tableName)
         {
             table = tableName;
             InitializeComponent();
+            this.FormClosing += FormClose;
 
+            inactivityTimer = new Timer();
+            inactivityTimer.Interval = inactivityLimit;
+            inactivityTimer.Tick += InactivityTimer_Tick;
+            inactivityTimer.Start();
+
+            this.MouseMove += ResetTimer;
+            this.KeyPress += ResetTimer;
+            this.MouseClick += ResetTimer;
+
+        }
+
+        private void ResetTimer(object sender, EventArgs e)
+        {
+            inactivityTimer.Stop();
+            inactivityTimer.Start();
+        }
+
+        private void InactivityTimer_Tick(object sender, EventArgs e)
+        {
+            inactivityTimer.Stop();
+            isProgrammaticClose = true;
+
+            this.Close();
         }
 
         private void load(object sender, EventArgs e) {
@@ -747,5 +777,14 @@ namespace curse
             }
             load(sender, e);
         }
+
+        private void FormClose(object sender, FormClosingEventArgs e)
+        {
+            if (isProgrammaticClose)
+            {
+                this.DialogResult = DialogResult.Abort;
+            }
+        }
+
     }
 }
