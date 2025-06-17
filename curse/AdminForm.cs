@@ -27,7 +27,7 @@ namespace curse
         private static string table = string.Empty;
         private static string id_string = string.Empty;
 
-        private static int pageSize = 5;
+        private static int pageSize = 10;
         private static int pageNumber = 1;
 
         private static readonly string viewproductsquery = "SELECT p.product_id, p.product_name AS 'Наименование товара', c.category_name AS 'Категория', s.supplier_name AS 'Поставщик', p.price AS 'Цена', p.stock AS 'Остаток на складе' FROM products p JOIN categories c ON p.category_id = c.category_id JOIN suppliers s ON p.supplier_id = s.supplier_id";
@@ -337,11 +337,6 @@ namespace curse
             dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize);
         }
 
-        private void button8_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void button12_Click(object sender, EventArgs e)
         {
             switch (table)
@@ -389,54 +384,6 @@ namespace curse
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-
-            comboBox1.Items.Clear();
-            
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            comboBox1.Items.Clear();
-            
-        }
-
-        private void button5_Click(object sender, EventArgs e)
-        {
-            comboBox1.Items.Clear();
-            
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-
-            comboBox1.Items.Clear();
-            
-        }
-
-        private void button6_Click(object sender, EventArgs e)
-        {
-            comboBox1.Items.Clear();
-            comboBox1.Items.Add("По продавцу");
-            comboBox1.Items.Add("По сумме");
-            comboBox1.Items.Add("По дате");
-            query = viewsalesquery + viewsalesqueryend;
-            table = "sales";
-            id_string = "sale_id";
-            dbhelper.LoadDataToDGV(dataGridView1, query, pageNumber, pageSize);
-
-            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-
-            textBox1.Text = "";
-        }
-
-        private void button9_Click_1(object sender, EventArgs e)
-        {
-            ReportForm r = new ReportForm();
-            r.ShowDialog();
         }
 
         private void button11_Click(object sender, EventArgs e)
@@ -597,25 +544,6 @@ namespace curse
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
-        }
-
-        private void button7_Click(object sender, EventArgs e)
-        {
-            FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
-
-            folderBrowserDialog.Description = "Выберите папку для сохранения";
-            folderBrowserDialog.ShowNewFolderButton = true;
-            string projectRoot = AppDomain.CurrentDomain.BaseDirectory;
-            folderBrowserDialog.SelectedPath = Path.Combine(projectRoot, "dumps");
-
-            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
-            {
-                string selectedPath = folderBrowserDialog.SelectedPath;
-                if (dbhelper.CreateDump(selectedPath))
-                {
-                    MessageBox.Show("Резерная копия успешно создана! \n Её можно найти в папке dumps", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }
         }
 
         private void loadSales(object sender, EventArgs e)
