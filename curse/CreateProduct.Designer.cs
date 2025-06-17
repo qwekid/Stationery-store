@@ -71,7 +71,7 @@
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(208, 35);
             this.button1.TabIndex = 21;
-            this.button1.Text = "Добавить товары";
+            this.button1.Text = "Добавить товар";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 

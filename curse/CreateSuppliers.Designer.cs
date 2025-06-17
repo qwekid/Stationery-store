@@ -132,7 +132,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textBox1);
             this.Name = "CreateSuppliers";
-            this.Text = "CreateSuppliers";
+            this.Text = "Создание поставщика";
             this.Load += new System.EventHandler(this.CreateSuppliers_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -37,6 +37,7 @@ namespace curse
             textBox1.Text = dt.Rows[0].ItemArray[1].ToString();
             textBox2.Text = dt.Rows[0].ItemArray[2].ToString();
             maskedTextBox1.Text = dt.Rows[0].ItemArray[3].ToString();
+            this.Text = "Редактирование поставщика";
         }
 
 
