@@ -168,54 +168,58 @@ namespace curse
                         query = $"UPDATE `officesupplies`.`products` SET `stock` = '{new_stock}' WHERE (`product_id` = '{product_id}');";
                         dbhelper.InsertDataOnDb(query);
 
-                        
-
-                        //создание чека
-
-                        Microsoft.Office.Interop.Word.Application wordApp = new Microsoft.Office.Interop.Word.Application();
-                        wordApp.Visible = true; // Чтобы увидеть Word
-
-                        // Создаем новый документ
-                        Microsoft.Office.Interop.Word.Document document = wordApp.Documents.Add();
-
-                        int rows = dataGridView1.Rows.Count + 2; // Увеличиваем на 1 для заголовков
-                        int columns = 4;
-
-                        Range headerRange = document.Sections[1].Headers[WdHeaderFooterIndex.wdHeaderFooterPrimary].Range;
-                        headerRange.Text = $"Товарный чек по продаже №{salesId}";
-
-                        Range range = document.Range();
-                        Microsoft.Office.Interop.Word.Table table = document.Tables.Add(range, rows, columns);
-                        table.Borders.Enable = 1; // Включаем границы таблицы
-
-
-                        table.Rows[1].Cells[1].Range.Text = "Наименование товара";
-                        table.Rows[1].Cells[2].Range.Text = "Стоимость товара";
-                        table.Rows[1].Cells[3].Range.Text = "Количество товара";
-                        table.Rows[1].Cells[4].Range.Text = "Итого";
-
-                        
-
-                        // Заполняем таблицу данными
-                        for (int i = 0; i < dataGridView1.Rows.Count; i++)
-                        {
-                            table.Cell(i + 2, 1).Range.Text = dataGridView1.Rows[i].Cells[0].Value.ToString();
-                            table.Cell(i + 2, 2).Range.Text = dataGridView1.Rows[i].Cells[3].Value.ToString();
-                            table.Cell(i + 2, 3).Range.Text = dataGridView1.Rows[i].Cells[4].Value.ToString();
-                            table.Cell(i + 2, 4).Range.Text = Convert.ToString(Convert.ToInt32(dataGridView1.Rows[i].Cells[4].Value) * Convert.ToInt32(dataGridView1.Rows[i].Cells[3].Value));
-                        }
-
-                        
-
-                        table.Cell(dataGridView1.Rows.Count + 2, 4).Range.Text = totalAmount.ToString();
-
-                        MessageBox.Show("Заказ успешно создан");
-
-                        comboBox1.SelectedIndex = -1;
-                        textBox2.Text = "";
-                        dataGridView1.Rows.Clear();
                     }
                 }
+
+                //создание чека
+                try
+                {
+
+                    Microsoft.Office.Interop.Word.Application wordApp = new Microsoft.Office.Interop.Word.Application();
+                    wordApp.Visible = true; // Чтобы увидеть Word
+
+                    // Создаем новый документ
+                    Microsoft.Office.Interop.Word.Document document = wordApp.Documents.Add();
+
+                    int rows = dataGridView1.Rows.Count + 2; // Увеличиваем на 1 для заголовков
+                    int columns = 4;
+
+                    Range headerRange = document.Sections[1].Headers[WdHeaderFooterIndex.wdHeaderFooterPrimary].Range;
+                    headerRange.Text = $"Товарный чек по продаже №{salesId}";
+
+                    Range range = document.Range();
+                    Microsoft.Office.Interop.Word.Table table = document.Tables.Add(range, rows, columns);
+                    table.Borders.Enable = 1; // Включаем границы таблицы
+
+
+                    table.Rows[1].Cells[1].Range.Text = "Наименование товара";
+                    table.Rows[1].Cells[2].Range.Text = "Стоимость товара";
+                    table.Rows[1].Cells[3].Range.Text = "Количество товара";
+                    table.Rows[1].Cells[4].Range.Text = "Итого";
+
+
+
+                    // Заполняем таблицу данными
+                    for (int i = 0; i < dataGridView1.Rows.Count; i++)
+                    {
+                        table.Cell(i + 2, 1).Range.Text = dataGridView1.Rows[i].Cells[0].Value.ToString();
+                        table.Cell(i + 2, 2).Range.Text = dataGridView1.Rows[i].Cells[3].Value.ToString();
+                        table.Cell(i + 2, 3).Range.Text = dataGridView1.Rows[i].Cells[4].Value.ToString();
+                        table.Cell(i + 2, 4).Range.Text = Convert.ToString(Convert.ToInt32(dataGridView1.Rows[i].Cells[4].Value) * Convert.ToInt32(dataGridView1.Rows[i].Cells[3].Value));
+                    }
+
+                    table.Cell(dataGridView1.Rows.Count + 2, 4).Range.Text = totalAmount.ToString();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Ошибка при создании чека");
+                }
+
+                MessageBox.Show("Заказ успешно создан");
+
+                comboBox1.SelectedIndex = -1;
+                textBox2.Text = "";
+                dataGridView1.Rows.Clear();
             }
             else { MessageBox.Show("Вы не добавили товаров!"); }
         }
