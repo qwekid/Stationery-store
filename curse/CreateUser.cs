@@ -83,12 +83,9 @@ namespace curse
 
                     query = $"UPDATE `officesupplies`.`users` SET `username` = '{name}', `email` = '{mail}', `password` = '{Hasher.HashPassword(password)}', `role` = '{role}' WHERE (`user_id` = '{Id}');;";
                     dbhelper.InsertDataOnDb(query);
-                    MessageBox.Show("Запись успешно добавлена");
+                    MessageBox.Show("Запись успешно обновлена");
 
-                    textBox1.Clear();
-                    textBox2.Clear();
-                    textBox3.Clear();
-                    comboBox1.SelectedIndex = -1;
+                    this.DialogResult = DialogResult.OK;
                 }
                 else
                 {

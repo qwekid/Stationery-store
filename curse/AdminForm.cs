@@ -27,7 +27,7 @@ namespace curse
         private static string table = string.Empty;
         private static string id_string = string.Empty;
 
-        private static int pageSize = 5;
+        private static int pageSize = 10;
         private static int pageNumber = 1;
 
         private static readonly string viewproductsquery = "SELECT p.product_id, p.product_name AS 'Наименование товара', c.category_name AS 'Категория', s.supplier_name AS 'Поставщик', p.price AS 'Цена', p.stock AS 'Остаток на складе' FROM products p JOIN categories c ON p.category_id = c.category_id JOIN suppliers s ON p.supplier_id = s.supplier_id";
